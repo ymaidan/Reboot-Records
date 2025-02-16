@@ -1,0 +1,9 @@
+https://learn.reboot01.com/graphiql/?query=%7B%0A++user+%7B%0A++++id%0A++++login%0A++%7D%0A++%0A++transaction%7B%0A++++id%0A++++type%0A++++amount%0A++++objectId%0A++++userId%0A++++createdAt%0A++++path%0A++%7D%0A++%0A++progress%7B%0A++++id%0A++++userId%0A++++objectId%0A++++grade%0A++++createdAt%0A++++updatedAt%0A++++path%0A++%7D%0A++%0A++result%7B%0A++++id%0A++++objectId%0A++++userId%0A++++grade%0A++++type%0A++++createdAt%0A++++updatedAt%0A++++path%0A++%7D%0A++%0A++object%7B%0A++++id%0A++++name%0A++++type%0A++++attrs%0A++%7D%0A%7D%0A
+
+{
+  user {
+    id
+    login
+  }
+  
+}
