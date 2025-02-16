@@ -37,7 +37,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         localStorage.setItem('jwt_token', data.token);
         
         // Redirect to profile or dashboard page
-        window.location.href = '/profile.html';
+        window.location.href = '/home.html';
         
     } catch (error) {
         errorMessage.textContent = error.message;
