@@ -7,23 +7,34 @@ export async function graphqlRequest(query, variables = {}) {
         throw new Error('Not authenticated');
     }
 
-    const response = await fetch(API_ENDPOINTS.GRAPHQL, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-            query,
-            variables
-        })
-    });
+    try {
+        const response = await fetch(API_ENDPOINTS.GRAPHQL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                query,
+                variables
+            })
+        });
 
-    if (!response.ok) {
-        throw new Error('GraphQL request failed');
+        if (!response.ok) {
+            throw new Error('GraphQL request failed: ' + response.statusText);
+        }
+
+        const data = await response.json();
+        
+        if (data.errors) {
+            throw new Error(data.errors[0].message);
+        }
+
+        return data;
+    } catch (error) {
+        console.error('GraphQL Request Error:', error);
+        throw error;
     }
-
-    return response.json();
 }
 
 export function getUserIdFromToken() {

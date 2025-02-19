@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GraphQL Profile - Home</title>
+    <title>GraphQL Profile</title>
     <link rel="stylesheet" href="/src/styles/home.css">
 </head>
 <body>
@@ -16,16 +16,16 @@
 
     <div class="container">
         <div class="profile-section">
-            <h2>Welcome, <span id="username"></span></h2>
-            <div id="userInfo" class="user-info">
-                <!-- User info will be populated here -->
-            </div>
+            <!-- Profile header will be inserted here -->
         </div>
+        
+        <!-- Other sections will go here -->
     </div>
 
     <script src="/src/utils/constants.js"></script>
-    <script src="/src/utils/graphql.js"></script>
-    <script src="/src/public/home.js"></script>
+    <script type="module" src="/src/utils/graphql.js"></script>
+    <script type="module" src="/src/utils/graphs.js"></script>
+    <script type="module" src="/src/public/home.js"></script>
     <script src="/src/public/logout.js"></script>
 </body>
 </html>

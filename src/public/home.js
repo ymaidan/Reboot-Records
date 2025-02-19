@@ -10,35 +10,69 @@ function checkAuth() {
 async function fetchUserData() {
     try {
         const query = `
-            query {
+            {
                 user {
                     id
                     login
-                    firstName
-                    lastName
                     email
+                    campus
+                    cohort
+                    level
                     auditRatio
+                    totalUp
+                    totalDown
+                }
+                
+                # Get XP transactions
+                transaction(where: {type: {_eq: "xp"}}, order_by: {createdAt: asc}) {
+                    amount
+                    createdAt
+                    path
+                }
+                
+                # Get latest project
+                progress(order_by: {createdAt: desc}, limit: 1) {
+                    path
+                    grade
                 }
             }
         `;
 
         const response = await graphqlRequest(query);
-        const userData = response.data.user;
-
-        // Update UI with user data
-        document.getElementById('username').textContent = userData.firstName || userData.login;
+        console.log('GraphQL Response:', response); // Debug log
         
-        const userInfo = document.getElementById('userInfo');
-        userInfo.innerHTML = `
-            <p><strong>Username:</strong> ${userData.login}</p>
-            <p><strong>Full Name:</strong> ${userData.firstName} ${userData.lastName}</p>
-            <p><strong>Email:</strong> ${userData.email}</p>
-            <p><strong>Audit Ratio:</strong> ${userData.auditRatio.toFixed(2)}</p>
-        `;
+        if (!response.data || !response.data.user || !response.data.user[0]) {
+            throw new Error('No user data received');
+        }
+
+        const userData = {
+            ...response.data.user[0],
+            totalXP: calculateTotalXP(response.data.transaction),
+            latestProject: getLatestProject(response.data.progress),
+            auditRatio: calculateAuditRatio(response.data.user[0])
+        };
+
+        console.log('Processed User Data:', userData); // Debug log
+        createProfileHeader(userData);
+        
     } catch (error) {
         console.error('Error fetching user data:', error);
-        // Handle error appropriately
     }
+}
+
+// Helper functions
+function calculateTotalXP(transactions) {
+    return transactions.reduce((total, t) => total + t.amount, 0);
+}
+
+function getLatestProject(progress) {
+    if (!progress || !progress[0]) return 'N/A';
+    return progress[0].path.split('/').pop();
+}
+
+function calculateAuditRatio(user) {
+    if (!user.totalUp || !user.totalDown) return 0;
+    return user.totalUp / user.totalDown;
 }
 
 // Initialize page
