@@ -1,3 +1,9 @@
+// Helper function to format XP
+function formatXP(xp) {
+    if (!xp) return '0';
+    return Math.round(xp / 1000);
+}
+
 export function createProfileHeader(userData) {
     console.log('Creating profile header with:', userData); // Debug log
     
@@ -57,12 +63,6 @@ export function createProfileHeader(userData) {
     `;
 
     profileSection.innerHTML = headerHTML;
-}
-
-// Helper function to format XP
-function formatXP(xp) {
-    if (!xp) return '0';
-    return Math.round(xp / 1000);
 }
 
 // Export other graph functions we'll create later

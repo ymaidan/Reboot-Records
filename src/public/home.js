@@ -1,3 +1,7 @@
+import { gql } from '@apollo/client';
+import client from '../utils/apolloClient.js';
+import { createProfileHeader } from '../utils/graphs.js'; // Import the function
+
 // Check if user is authenticated
 function checkAuth() {
     const token = localStorage.getItem('jwt_token');
@@ -6,50 +10,45 @@ function checkAuth() {
     }
 }
 
-// Fetch user data using GraphQL
+// Fetch user data using Apollo Client
 async function fetchUserData() {
-    try {
-        const query = `
-            {
-                user {
-                    id
-                    login
-                    email
-                    campus
-                    cohort
-                    level
-                    auditRatio
-                    totalUp
-                    totalDown
-                }
-                
-                # Get XP transactions
-                transaction(where: {type: {_eq: "xp"}}, order_by: {createdAt: asc}) {
-                    amount
-                    createdAt
-                    path
-                }
-                
-                # Get latest project
-                progress(order_by: {createdAt: desc}, limit: 1) {
-                    path
-                    grade
-                }
+    const USER_DATA_QUERY = gql`
+        query GetUserData {
+            user {
+                id
+                login
+                email
+                campus
+                auditRatio
+                totalUp
+                totalDown
             }
-        `;
+            transaction(where: {type: {_eq: "xp"}}, order_by: {createdAt: asc}) {
+                amount
+                createdAt
+                path
+            }
+            progress(order_by: {createdAt: desc}, limit: 1) {
+                path
+                grade
+            }
+        }
+    `;
 
-        const response = await graphqlRequest(query);
-        console.log('GraphQL Response:', response); // Debug log
-        
-        if (!response.data || !response.data.user || !response.data.user[0]) {
+    try {
+        const { data } = await client.query({
+            query: USER_DATA_QUERY,
+        });
+
+        if (!data || !data.user || !data.user[0]) {
             throw new Error('No user data received');
         }
 
         const userData = {
-            ...response.data.user[0],
-            totalXP: calculateTotalXP(response.data.transaction),
-            latestProject: getLatestProject(response.data.progress),
-            auditRatio: calculateAuditRatio(response.data.user[0])
+            ...data.user[0],
+            totalXP: calculateTotalXP(data.transaction),
+            latestProject: getLatestProject(data.progress),
+            auditRatio: calculateAuditRatio(data.user[0])
         };
 
         console.log('Processed User Data:', userData); // Debug log
@@ -79,4 +78,4 @@ function calculateAuditRatio(user) {
 document.addEventListener('DOMContentLoaded', () => {
     checkAuth();
     fetchUserData();
-}); 
+});
