@@ -1,18 +1,31 @@
-/* Variables */
+/* ==============================================
+   VARIABLES
+   - Main color scheme
+   - UI element properties
+   - Spacing and timing values
+============================================== */
 :root {
-    --primary-color: #6366f1;
-    --secondary-color: #4338ca;
-    --background-dark: #1a1a1a;
-    --card-background: rgba(255, 255, 255, 0.1);
-    --text-primary: #ffffff;
-    --text-secondary: #a0a0a0;
-    --border-radius: 12px;
-    --transition-speed: 0.3s;
-    --glass-background: rgba(255, 255, 255, 0.1);
-    --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+    /* Main theme colors */
+    --primary-color: #6366f1;      /* Purple-blue for primary elements */
+    --secondary-color: #4338ca;    /* Darker purple for hover states */
+    --background-dark: #1a1a1a;    /* Dark background */
+    --text-primary: #ffffff;        /* White text */
+    --text-secondary: #a0a0a0;     /* Gray text for subtitles */
+
+    /* Glass effect and UI properties */
+    --card-background: rgba(255, 255, 255, 0.1);  /* Transparent white for cards */
+    --glass-background: rgba(255, 255, 255, 0.1); /* Glass effect background */
+    --glass-border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for glass effect */
+    --border-radius: 12px;         /* Consistent corner rounding */
+    --transition-speed: 0.3s;      /* Standard animation duration */
 }
 
-/* Global Styles */
+/* ==============================================
+   BASE STYLES
+   - CSS Reset
+   - Basic page setup
+   - Background gradient
+============================================== */
 * {
     margin: 0;
     padding: 0;
@@ -21,6 +34,7 @@
 
 body {
     font-family: 'Inter', sans-serif;
+    /* Gradient background for depth */
     background: linear-gradient(
         135deg, 
         var(--background-dark) 0%,
@@ -34,43 +48,14 @@ body {
     overflow-x: hidden;
 }
 
-/* Enhanced Particles Animation */
-.particles {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    overflow: hidden;
-}
-
-.particle {
-    position: absolute;
-    width: 3px;
-    height: 3px;
-    background: linear-gradient(to bottom, var(--primary-color), transparent);
-    box-shadow: 0 0 10px var(--primary-color);
-    animation: fall 20s linear infinite;
-}
-
-@keyframes fall {
-    0% {
-        transform: translateY(-100vh) scale(0);
-        opacity: 0;
-    }
-    50% {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-    100% {
-        transform: translateY(100vh) scale(0);
-        opacity: 0;
-    }
-}
-
-/* Navigation */
+/* ==============================================
+   NAVIGATION
+   - Top navigation bar
+   - Brand logo/text
+   - Logout button
+============================================== */
 .top-nav {
+    /* Sticky navigation with glass effect */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -84,12 +69,50 @@ body {
 }
 
 .nav-brand {
+    /* Glowing brand text effect */
     font-size: 1.5rem;
     font-weight: bold;
     color: var(--text-primary);
+    text-shadow: 0 0 10px var(--primary-color);
+    position: relative;
+    animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+    0% {
+        text-shadow: 0 0 10px var(--primary-color);
+    }
+    50% {
+        text-shadow: 0 0 20px var(--primary-color),
+                     0 0 30px var(--primary-color);
+    }
+    100% {
+        text-shadow: 0 0 10px var(--primary-color);
+    }
+}
+
+/* Optional: Add hover effect */
+.nav-brand:hover {
+    animation: glowBrighter 1s ease-in-out infinite;
+}
+
+@keyframes glowBrighter {
+    0% {
+        text-shadow: 0 0 10px var(--primary-color);
+    }
+    50% {
+        text-shadow: 0 0 20px var(--primary-color),
+                     0 0 30px var(--primary-color),
+                     0 0 40px var(--primary-color);
+        color: #141313;
+    }
+    100% {
+        text-shadow: 0 0 10px var(--primary-color);
+    }
 }
 
 #logoutButton {
+    /* Styled logout button */
     padding: 0.8rem 2rem;
     background: var(--primary-color);
     color: white;
@@ -103,15 +126,25 @@ body {
     background: var(--secondary-color);
 }
 
-/* Container */
+/* ==============================================
+   CONTAINER & LAYOUT
+   - Main content wrapper
+   - Centered content
+============================================== */
 .container {
     max-width: 1400px;
     margin: 0 auto;
     padding: 2rem;
 }
 
-/* Profile Header */
+/* ==============================================
+   PROFILE SECTION
+   - User image
+   - Profile information
+   - Information columns
+============================================== */
 .profile-header {
+    /* Glass card containing profile info */
     display: flex;
     gap: 3rem;
     padding: 3rem;
