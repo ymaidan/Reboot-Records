@@ -7,23 +7,85 @@
     <link rel="stylesheet" href="/src/styles/home.css">
 </head>
 <body>
-    <nav class="navbar">
+    <div class="particles">
+        <div class="particle large" style="left: 5%; animation-delay: 0s;"></div>
+        <div class="particle large" style="left: 25%; animation-delay: 4s;"></div>
+        <div class="particle large" style="left: 45%; animation-delay: 8s;"></div>
+        <div class="particle large" style="left: 65%; animation-delay: 12s;"></div>
+        <div class="particle large" style="left: 85%; animation-delay: 16s;"></div>
+        
+        <div class="particle medium" style="left: 15%; animation-delay: 2s;"></div>
+        <div class="particle medium" style="left: 35%; animation-delay: 6s;"></div>
+        <div class="particle medium" style="left: 55%; animation-delay: 10s;"></div>
+        <div class="particle medium" style="left: 75%; animation-delay: 14s;"></div>
+        <div class="particle medium" style="left: 95%; animation-delay: 18s;"></div>
+        
+        <div class="particle small" style="left: 10%; animation-delay: 1s;"></div>
+        <div class="particle small" style="left: 30%; animation-delay: 5s;"></div>
+        <div class="particle small" style="left: 50%; animation-delay: 9s;"></div>
+        <div class="particle small" style="left: 70%; animation-delay: 13s;"></div>
+        <div class="particle small" style="left: 90%; animation-delay: 17s;"></div>
+    </div>
+
+    <nav class="top-nav">
         <div class="nav-brand">Reboot Records</div>
-        <div class="nav-links">
-            <button id="logoutBtn" onclick="logout()">Logout</button>
-        </div>
+        <form id="logoutForm">
+            <button type="submit" id="logoutButton">Logout</button>
+        </form>
     </nav>
 
     <div class="container">
-        <div class="profile-section">
-            <!-- Profile header will be inserted here -->
-        </div>
-        
-        <!-- Other sections will go here -->
+        <header class="profile-header">
+            <div id="imgContainer"></div>
+            <div id="infoContainer">
+                <div class="info-column">
+                    <h2>Name: <span id="namePlc"></span></h2>
+                    <h2>Email: <span id="emailPlc"></span></h2>
+                    <h2>Cohort: <span id="cohortPlc"></span></h2>
+                </div>
+                <div class="info-column">
+                    <h2>Audit Ratio: <span id="auditRatioPlc"></span></h2>
+                    <h2>Campus: <span id="campusPlc"></span></h2>
+                    <h2>Level: <span id="levelPlc"></span></h2>
+                </div>
+                <div class="info-column">
+                    <h2>XP: <span id="xpPlc"></span></h2>
+                    <h2>Rank: <span id="rankPlc"></span></h2>
+                    <h2>Latest Project: <span id="latestProjPlc"></span></h2>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <div id="graphs">
+                <div id="skillsGraphs">
+                    <div id="technicalSkills" class="glass-card">
+                        <h2 class="audit-title">Technical Skills</h2>
+                        <div id="technicalSkillsGraph" class="skills-graph"></div>
+                    </div>
+                    <div id="technologySkills" class="glass-card">
+                        <h2 class="audit-title">Technology Skills</h2>
+                        <div id="technologySkillsGraph" class="skills-graph"></div>
+                    </div>
+                </div>
+                <div id="XPOverTimeGraph" class="glass-card">
+                    <h2 class="audit-title">XP Progress</h2>
+                    <div id="XPOverTime"></div>
+                </div>
+            </div>
+            <div id="usrAudits">
+                <div id="passedPlc" class="audit-section glass-card">
+                    <h2 class="audit-title">Passed Audits</h2>
+                </div>
+                <div id="failedPlc" class="audit-section glass-card">
+                    <h2 class="audit-title">Failed Audits</h2>
+                </div>
+            </div>
+        </main>
     </div>
 
-    <script type="module" src=/src/public/home.js"></script>
-    <script src="/src/public/logout.js"></script>
+    <script type="module" src="/src/public/home.js"></script>
+    <script type="module" src="/src/public/logout.js"></script>
 </body>
 </html>
 

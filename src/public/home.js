@@ -1,6 +1,8 @@
 import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
+import { checkAuth } from '/src/public/logout.js';
+import { getUserInfo } from '/src/utils/graphql.js';
 
 // Check if user is authenticated
 function checkAuth() {
@@ -74,8 +76,52 @@ function calculateAuditRatio(user) {
     return user.totalUp / user.totalDown;
 }
 
-// Initialize page
-document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
-    fetchUserData();
-});
+// Function to hide loading overlay
+function hideLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'none';
+    }
+}
+
+// Function to show loading overlay
+function showLoading() {
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    if (loadingOverlay) {
+        loadingOverlay.style.display = 'flex';
+    }
+}
+
+async function initializePage() {
+    try {
+        showLoading();
+        // Check authentication
+        if (!checkAuth()) {
+            return;
+        }
+
+        // Fetch user data
+        const userData = await getUserInfo(client);
+        if (userData) {
+            // Update profile section
+            document.getElementById('userName').textContent = userData.login || 'N/A';
+            document.getElementById('userEmail').textContent = userData.email || 'N/A';
+            document.getElementById('userLevel').textContent = userData.level || 'N/A';
+            document.getElementById('userXP').textContent = `${Math.round((userData.totalXP || 0) / 1000)}K`;
+            document.getElementById('auditRatio').textContent = userData.auditRatio?.toFixed(2) || 'N/A';
+            
+            // Set profile image
+            const profileImage = document.getElementById('profileImage');
+            if (profileImage) {
+                profileImage.src = userData.image || '/assets/default-avatar.png';
+            }
+        }
+    } catch (error) {
+        console.error('Error initializing page:', error);
+    } finally {
+        hideLoading();
+    }
+}
+
+// Initialize page when DOM is loaded
+document.addEventListener('DOMContentLoaded', initializePage);
