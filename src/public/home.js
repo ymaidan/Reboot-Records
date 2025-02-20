@@ -4,14 +4,6 @@ import { createProfileHeader } from '../utils/graphs.js'; // Import the function
 import { checkAuth } from '/src/public/logout.js';
 import { getUserInfo } from '/src/utils/graphql.js';
 
-// Check if user is authenticated
-function checkAuth() {
-    const token = localStorage.getItem('jwt_token');
-    if (!token) {
-        window.location.href = '/index.html';
-    }
-}
-
 // Fetch user data using Apollo Client
 async function fetchUserData() {
     const USER_DATA_QUERY = gql`
