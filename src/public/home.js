@@ -1,11 +1,10 @@
 import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
-import { checkAuth } from '/src/public/logout.js';
-import { getUserInfo } from '/src/utils/graphql.js';
+import { checkAuth as validateAuth } from '/src/public/logout.js';
 
 // Check if user is authenticated
-function checkAuth() {
+function handleAuth() {
     const token = localStorage.getItem('jwt_token');
     if (!token) {
         window.location.href = '/index.html';
@@ -93,6 +92,6 @@ function updateProfileHeader(userData) {
 
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    checkAuth();
+    handleAuth();
     fetchUserData();
 });

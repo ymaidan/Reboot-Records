@@ -51,3 +51,43 @@ export function getUserIdFromToken() {
         return null;
     }
 }
+
+export async function getUserInfo() {
+    const query = `
+        query {
+            user(limit: 1) {
+                id
+                firstName
+                lastName
+                email
+                auditRatio
+                events {
+                    level
+                    event {
+                        path
+                    }
+                }
+                labels {
+                    labelName
+                }
+                public {
+                    campus
+                }
+                transactions_aggregate(
+                    where: {
+                        event: { path: { _eq: "/bahrain/bh-module" } }
+                        type: { _eq: "xp" }
+                    }
+                ) {
+                    aggregate {
+                        sum {
+                            amount
+                        }
+                    }
+                }
+            }
+        }
+    `;
+    
+    return graphqlRequest(query);
+}
