@@ -26,15 +26,23 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             }
         });
 
+        // Log the response
+        console.log('Login response:', response); // Log the response
+
         if (!response.ok) {
             throw new Error('Invalid credentials');
         }
 
         // Get JWT token from response
-        const data = await response.json();
+        const data = await response.text(); // Use text() instead of json()
+        console.log('Response data:', data); // Log the response data
+        if (!data) {
+            throw new Error('No token received from the server');
+        }
         
-        // Store JWT in localStorage
-        localStorage.setItem('jwt_token', data.token);
+        // Store the token without extra quotes
+        localStorage.setItem('jwt_token', data.replace(/"/g, '')); // Remove any extra quotes
+        console.log('Stored JWT Token:', localStorage.getItem('jwt_token')); // Log the stored token
         
         // Redirect to profile or dashboard page
         window.location.href = '/views/home.html';

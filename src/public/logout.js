@@ -18,6 +18,7 @@ export function logout(event) {
     try {
         // Clear the JWT token
         localStorage.removeItem('jwt_token');
+        console.log('User logged out and token cleared.');
         
         // Clear any other stored data if needed
         localStorage.clear();

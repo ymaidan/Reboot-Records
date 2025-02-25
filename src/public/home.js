@@ -6,6 +6,7 @@ import { checkAuth as validateAuth } from '/src/public/logout.js';
 // Check if user is authenticated
 function handleAuth() {
     const token = localStorage.getItem('jwt_token');
+    console.log('JWT Token:', token); // Log the token to check its format
     if (!token) {
         window.location.href = '/index.html';
     }
@@ -13,48 +14,67 @@ function handleAuth() {
 
 // Fetch user data using Apollo Client
 async function fetchUserData() {
+    const token = localStorage.getItem('jwt_token');
+    console.log('JWT Token:', token); // Log the token to check its format
+
+    // Check if the token is valid (not null or empty)
+    if (!token || token.startsWith('"') || token.endsWith('"')) {
+        console.error('Invalid JWT token found. User is not authenticated.');
+        return; // Exit if no valid token is found
+    }
+
     const USER_DATA_QUERY = gql`
-        query getUserInfo {
-            user(limit: 1) {
-                id
-                firstName
-                lastName
-                email
-                auditRatio
-                events {
-                    level
-                    event {
-                        path
-                    }
-                }
-                labels {
-                    labelName
-                }
-                public {
-                    campus
-                }
-                transactions_aggregate(
-                    where: {
-                        event: { path: { _eq: "/bahrain/bh-module" } }
-                        type: { _eq: "xp" }
-                    }
-                ) {
-                    aggregate {
-                        sum {
-                            amount
-                        }
-                    }
-                }
-            }
-        }
+query getUserInfo {
+		user(limit: 1) {
+			id
+			firstName
+			lastName
+			email
+			auditRatio
+			attrs
+			events {
+				level
+				event {
+					id
+					path
+				}
+			}
+			labels {
+				labelName
+			}
+			public {
+				campus
+			}
+			transactions_aggregate(
+				where: {
+					event: { path: { _eq: "/bahrain/bh-module" } }
+					type: { _eq: "xp" }
+				}
+			) {
+				aggregate {
+					sum {
+						amount
+					}
+				}
+			}
+		}
+	}
     `;
 
     try {
         const { data } = await client.query({
             query: USER_DATA_QUERY,
+            context: {
+                headers: {
+                    Authorization: `Bearer ${token}`, // Ensure the token is sent correctly
+                },
+            },
         });
 
-        if (!data || !data.user || !data.user[0]) {
+        console.log('User data received:', data); // Log the received data
+
+        // Check if user data is present
+        if (!data || !data.user || !data.user.length) {
             throw new Error('No user data received');
         }
 
@@ -79,6 +99,12 @@ async function fetchUserData() {
 
 // Update the profile header with user data
 function updateProfileHeader(userData) {
+    // Ensure userData is valid before updating the UI
+    if (!userData) {
+        console.error('No user data available to update the profile header.');
+        return;
+    }
+    
     document.getElementById('namePlc').textContent = userData.name || 'N/A';
     document.getElementById('emailPlc').textContent = userData.email || 'N/A';
     document.getElementById('auditRatioPlc').textContent = userData.auditRatio?.toFixed(2) || 'N/A';

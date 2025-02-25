@@ -4,6 +4,7 @@ export async function graphqlRequest(query, variables = {}) {
     const token = localStorage.getItem('jwt_token');
     
     if (!token) {
+        console.error('Not authenticated: No JWT token found.');
         throw new Error('Not authenticated');
     }
 
