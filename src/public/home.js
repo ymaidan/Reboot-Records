@@ -86,7 +86,7 @@ query getUserInfo {
             campus: user.public.campus,
             level: user.events[0]?.level || 'N/A',
             xp: user.transactions_aggregate.aggregate.sum.amount || 0,
-            rank: user.labels.map(label => label.labelName).join(', ') || 'N/A',
+            cohort: user.labels.find(label => label.labelName.startsWith('Cohort'))?.labelName || 'N/A',
             latestProject: user.events[0]?.event.path.split('/').pop() || 'N/A',
             imageId: user.attrs["pro-picUploadId"]
         };
@@ -112,7 +112,8 @@ function updateProfileHeader(userData) {
     document.getElementById('campusPlc').textContent = userData.campus || 'N/A';
     document.getElementById('levelPlc').textContent = userData.level || 'N/A';
     document.getElementById('xpPlc').textContent = userData.xp || 'N/A';
-    document.getElementById('rankPlc').textContent = userData.rank || 'N/A';
+    document.getElementById('cohortPlc').textContent = userData.cohort || 'N/A';
+    document.getElementById('rankPlc').textContent = 'N/A'; // Set rank to N/A if not used
     document.getElementById('latestProjPlc').textContent = userData.latestProject || 'N/A';
 
     const imgContainer = document.getElementById('imgContainer');
