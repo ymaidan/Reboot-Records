@@ -87,7 +87,8 @@ query getUserInfo {
             level: user.events[0]?.level || 'N/A',
             xp: user.transactions_aggregate.aggregate.sum.amount || 0,
             rank: user.labels.map(label => label.labelName).join(', ') || 'N/A',
-            latestProject: user.events[0]?.event.path.split('/').pop() || 'N/A'
+            latestProject: user.events[0]?.event.path.split('/').pop() || 'N/A',
+            imageId: user.attrs["pro-picUploadId"]
         };
 
         updateProfileHeader(userData);
@@ -113,6 +114,23 @@ function updateProfileHeader(userData) {
     document.getElementById('xpPlc').textContent = userData.xp || 'N/A';
     document.getElementById('rankPlc').textContent = userData.rank || 'N/A';
     document.getElementById('latestProjPlc').textContent = userData.latestProject || 'N/A';
+
+    const imgContainer = document.getElementById('imgContainer');
+    if (imgContainer) {
+        imgContainer.innerHTML = ''; // Clear any existing content
+        if (userData.imageId) {
+            const img = document.createElement("img");
+            img.src = `https://learn.reboot01.com/api/storage?token=${localStorage.getItem("jwt_token")}&fileId=${userData.imageId}`;
+            img.alt = "Personal Image";
+            img.style.width = '100%'; // Ensure the image fits the container
+            img.style.borderRadius = '50%'; // Make the image circular
+            imgContainer.appendChild(img);
+        } else {
+            console.error('Image ID missing.');
+        }
+    } else {
+        console.error('Image container not found.');
+    }
 }
 
 

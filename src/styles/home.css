@@ -146,6 +146,7 @@ body {
 .profile-header {
     /* Glass card containing profile info */
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
     gap: 3rem;
     padding: 3rem;
     margin-bottom: 3rem;
@@ -157,18 +158,22 @@ body {
 }
 
 #imgContainer {
-    min-width: 250px;
+    width: 250px;
     height: 250px;
     border-radius: 50%;
     overflow: hidden;
     border: 4px solid var(--primary-color);
     box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ccc; /* Fallback color */
 }
 
 #infoContainer {
     flex: 1;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap; /* Allow wrapping for smaller screens */
     gap: 3rem;
 }
 
