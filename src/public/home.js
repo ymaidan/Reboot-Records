@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
 import { numberWithOrdinal } from '../utils/numbersFormatter.js';
+import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION } from '../graphql/queries.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
 import { checkAuth as validateAuth } from '/src/public/logout.js';
 
@@ -24,47 +25,9 @@ async function fetchUserData() {
         return; // Exit if no valid token is found
     }
 
-    const USER_DATA_QUERY = gql`
-query getUserInfo {
-		user(limit: 1) {
-			id
-			firstName
-			lastName
-			email
-			auditRatio
-			attrs
-			events {
-				level
-				event {
-					id
-					path
-				}
-			}
-			labels {
-				labelName
-			}
-			public {
-				campus
-			}
-			transactions_aggregate(
-				where: {
-					event: { path: { _eq: "/bahrain/bh-module" } }
-					type: { _eq: "xp" }
-				}
-			) {
-				aggregate {
-					sum {
-						amount
-					}
-				}
-			}
-		}
-	}
-    `;
-
     try {
         const { data } = await client.query({
-            query: USER_DATA_QUERY,
+            query: GET_USER_INFO,
             context: {
                 headers: {
                     Authorization: `Bearer ${token}`, // Ensure the token is sent correctly
@@ -107,7 +70,23 @@ query getUserInfo {
             imageId: user.attrs["pro-picUploadId"]
         };
 
+        // Fetch the latest project
+        const latestProjVal = await client.query({
+            query: GET_USER_LATEST_PROJECT,
+            variables: {
+                userID: user.id,
+            },
+        }).then((result) => {
+            console.log("Latest Project Query Result:", result); // Log the result
+            return result.data.group[0]?.object?.name || "Nothing For Now!";
+        });
+
+        userData.latestProject = latestProjVal; // Add latest project to userData
+
+        console.log("Profile Image URL:", userData.imageId); // Log the profile image URL
+
         updateProfileHeader(userData);
+        await updateProfileImage(userData.imageId);
         
     } catch (error) {
         console.error('Error fetching user data:', error);
@@ -150,20 +129,6 @@ function updateProfileHeader(userData) {
     }
 }
 
-const GET_USER_POSITION = gql`
-query getUserPosition($userID: Int!) {
-    event(where: { id: { _eq: 72 } }) {
-        id
-        registrations {
-            users(where: { id: { _eq: $userID } }) {
-                id
-                position
-            }
-        }
-    }
-}
-`;
-
 async function fetchUserRank() {
     try {
         const userID = localStorage.getItem("userId");
@@ -190,6 +155,20 @@ async function fetchUserRank() {
     } catch (error) {
         console.error('Error fetching user rank:', error);
         document.getElementById('rankPlc').textContent = "N/A";
+    }
+}
+
+// Update the profile image
+async function updateProfileImage(imageUrl) {
+    const imgContainer = document.getElementById('imgContainer');
+    if (imgContainer) {
+        const img = document.createElement("img");
+        img.src = imageUrl;
+        img.alt = "Profile Image";
+        img.style.width = "100%"; // Ensure it fills the container
+        img.style.height = "100%"; // Ensure it fills the container
+        img.style.objectFit = "cover"; // Maintain aspect ratio
+     
     }
 }
 

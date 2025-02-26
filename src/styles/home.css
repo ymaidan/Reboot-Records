@@ -168,13 +168,14 @@ body {
     justify-content: center;
     align-items: center;
     background-color: #ccc; /* Fallback color */
+    margin: 0 auto;
 }
 
 #infoContainer {
     flex: 1;
     display: flex;
     flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    gap: 3rem;
+    gap: 1rem;
 }
 
 .info-column {
