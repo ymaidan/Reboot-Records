@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
 import { numberWithOrdinal } from '../utils/numbersFormatter.js';
-import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION } from '../graphql/queries.js';
+import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION, GET_USER_XP_HISTORY } from '../graphql/queries.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
 import { checkAuth as validateAuth } from '/src/public/logout.js';
 
@@ -172,8 +172,163 @@ async function updateProfileImage(imageUrl) {
     }
 }
 
+async function fetchXPProgress() {
+    try {
+        const result = await client.query({
+            query: GET_USER_XP_HISTORY,
+            variables: {
+                userId: localStorage.getItem("userId"),
+            },
+        });
+
+        const transactions = result.data.transaction;
+        console.log('XP Transactions:', transactions); // Log the transactions
+
+        progressFiller(transactions); // Use the new function
+    } catch (error) {
+        console.error('Error fetching XP progress:', error);
+    }
+}
+
+function progressFiller(progressInfo) {
+    const XPOverTime = document.getElementById("XPOverTime");
+    if (!XPOverTime || !progressInfo.length) return;
+    const svgNS = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNS, "svg");
+    svg.setAttribute("viewBox", "0 0 800 400");
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    svg.style.overflow = "visible";
+    const padding = 60;
+    const width = 800 - 2 * padding;
+    const height = 400 - 2 * padding;
+
+    let cumulativeXP = 0;
+    const cumulativeData = progressInfo.map((point) => ({
+        createdAt: new Date(point.createdAt),
+        amount: (cumulativeXP += point.amount),
+        projectName: point.object.name,
+    }));
+
+    const dates = progressInfo.map((p) => new Date(p.createdAt).getTime());
+    const xMin = new Date(Math.min(...dates));
+    const xMax = new Date(Math.max(...dates));
+    const yMin = 0;
+    const yMax = Math.max(...cumulativeData.map((p) => p.amount));
+
+    const xAxis = document.createElementNS(svgNS, "line");
+    xAxis.setAttribute("x1", padding);
+    xAxis.setAttribute("y1", height + padding);
+    xAxis.setAttribute("x2", width + padding);
+    xAxis.setAttribute("y2", height + padding);
+    xAxis.setAttribute("stroke", "#ffffff");
+    svg.appendChild(xAxis);
+
+    const yAxis = document.createElementNS(svgNS, "line");
+    yAxis.setAttribute("x1", padding);
+    yAxis.setAttribute("y1", padding);
+    yAxis.setAttribute("x2", padding);
+    yAxis.setAttribute("y2", height + padding);
+    yAxis.setAttribute("stroke", "#ffffff");
+    svg.appendChild(yAxis);
+
+    for (let i = 0; i <= 5; i++) {
+        const y = height + padding - (i * height) / 5;
+        const value = Math.round((yMax * i) / 5);
+        const label = document.createElementNS(svgNS, "text");
+        label.setAttribute("x", padding - 10);
+        label.setAttribute("y", y);
+        label.setAttribute("text-anchor", "end");
+        label.setAttribute("fill", "#ffffff");
+        label.setAttribute("class", "axis-label");
+        label.textContent = value;
+        svg.appendChild(label);
+
+        const gridLine = document.createElementNS(svgNS, "line");
+        gridLine.setAttribute("x1", padding);
+        gridLine.setAttribute("y1", y);
+        gridLine.setAttribute("x2", width + padding);
+        gridLine.setAttribute("y2", y);
+        gridLine.setAttribute("stroke", "rgba(255, 255, 255, 0.1)");
+        gridLine.setAttribute("class", "grid-line");
+        svg.appendChild(gridLine);
+    }
+
+    const numDateLabels = 5;
+    for (let i = 0; i <= numDateLabels; i++) {
+        const x = padding + (i * width) / numDateLabels;
+        const date = new Date(xMin.getTime() + (xMax - xMin) * (i / numDateLabels));
+        const label = document.createElementNS(svgNS, "text");
+        label.setAttribute("x", x);
+        label.setAttribute("y", height + padding + 20);
+        label.setAttribute("text-anchor", "middle");
+        label.setAttribute("fill", "#ffffff");
+        label.setAttribute("class", "axis-label");
+        label.textContent = date.toLocaleDateString();
+        svg.appendChild(label);
+    }
+
+    cumulativeData.forEach((point, index) => {
+        const x = padding + ((point.createdAt - xMin) / (xMax - xMin)) * width;
+        const y = height + padding - ((point.amount - yMin) / (yMax - yMin)) * height;
+
+        if (index > 0) {
+            const prevPoint = cumulativeData[index - 1];
+            const prevX = padding + ((prevPoint.createdAt - xMin) / (xMax - xMin)) * width;
+            const prevY = height + padding - ((prevPoint.amount - yMin) / (yMax - yMin)) * height;
+            const line = document.createElementNS(svgNS, "line");
+            line.setAttribute("x1", prevX);
+            line.setAttribute("y1", prevY);
+            line.setAttribute("x2", x);
+            line.setAttribute("y2", y);
+            line.setAttribute("stroke-width", "2");
+            line.setAttribute("class", "xp-line animate-line");
+            svg.appendChild(line);
+        }
+
+        const dot = document.createElementNS(svgNS, "circle");
+        dot.setAttribute("cx", x);
+        dot.setAttribute("cy", y);
+        dot.setAttribute("r", 4);
+        dot.setAttribute("class", "xp-dot animate-dot");
+        dot.style.animationDelay = `${index * 0.01}s`;
+
+        dot.addEventListener("mouseover", (e) => {
+            const tooltip = document.createElementNS(svgNS, "text");
+            tooltip.setAttribute("x", x);
+            tooltip.setAttribute("y", y - 20);
+            tooltip.setAttribute("text-anchor", "middle");
+            tooltip.setAttribute("class", "tooltip");
+            tooltip.textContent = point.amount;
+            svg.appendChild(tooltip);
+
+            const tooltip2 = document.createElementNS(svgNS, "text");
+            tooltip2.setAttribute("x", x);
+            tooltip2.setAttribute("y", y - 5);
+            tooltip2.setAttribute("text-anchor", "middle");
+            tooltip2.setAttribute("class", "tooltip2");
+            tooltip2.textContent = point.projectName;
+            svg.appendChild(tooltip2);
+        });
+
+        dot.addEventListener("mouseout", () => {
+            const tooltip = svg.querySelector(".tooltip");
+            if (tooltip) tooltip.remove();
+            const tooltip2 = svg.querySelector(".tooltip2");
+            if (tooltip2) tooltip2.remove();
+        });
+
+        svg.appendChild(dot);
+    });
+
+    XPOverTime.innerHTML = "";
+    XPOverTime.appendChild(svg);
+}
+
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     handleAuth();
-    fetchUserData().then(fetchUserRank);
+    fetchUserData().then(() => {
+        fetchUserRank();
+        fetchXPProgress(); // Fetch XP progress
+    });
 });

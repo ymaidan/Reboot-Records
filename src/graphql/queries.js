@@ -74,3 +74,39 @@ export const GET_USER_POSITION = gql`
 		}
 	}
 `;
+
+export const GET_USER_SKILLS = gql`
+	query skills($userId: Int!) {
+		user: user_by_pk(id: $userId) {
+			transactions(
+				distinct_on: [type]
+				order_by: [{ type: asc }, { amount: desc }]
+				where: { userId: { _eq: $userId }, type: { _like: "skill_%" } }
+			) {
+				type
+				amount
+			}
+		}
+	}
+`;
+
+export const GET_USER_XP_HISTORY = gql`
+	query GetUserXPHistory($userId: Int!) {
+		transaction(
+			where: {
+				_and: [
+					{ userId: { _eq: $userId } }
+					{ type: { _eq: "xp" } }
+					{ event: { path: { _eq: "/bahrain/bh-module" } } }
+				]
+			}
+			order_by: { createdAt: asc }
+		) {
+			amount
+			createdAt
+			object {
+				name
+			}
+		}
+	}
+`;

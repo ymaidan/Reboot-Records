@@ -344,3 +344,40 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: var(--secondary-color);
 }
+
+/* XP Progress Graph Styling */
+.xp-line {
+    stroke: #6b6bff;
+    stroke-width: 2;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 1.5s ease forwards;
+}
+
+.xp-dot {
+    r: 5;
+    fill: #6b6bff;
+    stroke: #121212;
+    stroke-width: 2;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    cursor: pointer;
+    transition: r 0.2s ease;
+}
+
+.xp-dot:hover {
+    fill: #8282ff;
+    r: 7;
+}
+
+@keyframes drawLine {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
