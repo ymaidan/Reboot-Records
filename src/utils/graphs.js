@@ -1,8 +1,4 @@
-// Helper function to format XP
-function formatXP(xp) {
-    if (!xp) return '0';
-    return Math.round(xp / 1000);
-}
+
 
 export function createProfileHeader(userData) {
     console.log('Creating profile header with:', userData); // Debug log

@@ -367,7 +367,7 @@ body {
 
 .xp-dot:hover {
     fill: #8282ff;
-    r: 7;
+    r: 10;
 }
 
 @keyframes drawLine {
@@ -381,3 +381,29 @@ body {
         opacity: 1;
     }
 }
+
+.radar-circle {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.1);
+}
+
+.radar-axis {
+    stroke: #ffffff;
+    stroke-width: 1;
+}
+
+.skill-label {
+    fill: #ffffff;
+    font-size: 10px;
+}
+
+.radar-area {
+    fill: rgba(107, 107, 255, 0.5);
+    stroke: #6b6bff;
+    stroke-width: 2;
+}
+
+/* Remove or comment out styles related to rank display */
+/* .rank-display {
+    // styles for rank display
+} */

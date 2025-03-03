@@ -1,7 +1,6 @@
 import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
-import { numberWithOrdinal } from '../utils/numbersFormatter.js';
-import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION, GET_USER_XP_HISTORY } from '../graphql/queries.js';
+import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION, GET_USER_XP_HISTORY, GET_USER_SKILLS } from '../graphql/queries.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
 import { checkAuth as validateAuth } from '/src/public/logout.js';
 
@@ -85,12 +84,20 @@ async function fetchUserData() {
 
         console.log("Profile Image URL:", userData.imageId); // Log the profile image URL
 
-        updateProfileHeader(userData);
+         updateProfileHeader(userData);
         await updateProfileImage(userData.imageId);
         
     } catch (error) {
         console.error('Error fetching user data:', error);
     }
+}
+
+// Function to format XP
+function formatXP(xp) {
+    if (xp >= 1000) {
+        return `${(xp / 1000).toFixed(0)} KB`;
+    }
+    return `${xp} KB`;
 }
 
 // Update the profile header with user data
@@ -106,9 +113,8 @@ function updateProfileHeader(userData) {
     document.getElementById('auditRatioPlc').textContent = userData.auditRatio?.toFixed(2) || 'N/A';
     document.getElementById('campusPlc').textContent = userData.campus || 'N/A';
     document.getElementById('levelPlc').textContent = userData.level || 'N/A';
-    document.getElementById('xpPlc').textContent = `${userData.xp} KB`;
+    document.getElementById('xpPlc').textContent = formatXP(userData.xp); // Use the formatXP function
     document.getElementById('cohortPlc').textContent = userData.cohort || 'N/A';
-    document.getElementById('rankPlc').textContent = 'N/A'; // Set rank to N/A if not used
     document.getElementById('latestProjPlc').textContent = userData.latestProject || 'N/A';
 
     const imgContainer = document.getElementById('imgContainer');
@@ -126,35 +132,6 @@ function updateProfileHeader(userData) {
         }
     } else {
         console.error('Image container not found.');
-    }
-}
-
-async function fetchUserRank() {
-    try {
-        const userID = localStorage.getItem("userId");
-        if (!userID) {
-            console.error('User ID not found in localStorage');
-            return;
-        }
-
-        const { data } = await client.query({
-            query: GET_USER_POSITION,
-            variables: { userID: parseInt(userID) },
-        });
-
-        console.log('Rank data received:', data);
-
-        const position = data.event[0]?.registrations[0]?.users[0]?.position;
-        const rankNo = numberWithOrdinal(position);
-
-        if (rankNo !== "Invalid Number") {
-            document.getElementById('rankPlc').textContent = `${rankNo} Among All Students`;
-        } else {
-            document.getElementById('rankPlc').textContent = "N/A";
-        }
-    } catch (error) {
-        console.error('Error fetching user rank:', error);
-        document.getElementById('rankPlc').textContent = "N/A";
     }
 }
 
@@ -184,13 +161,13 @@ async function fetchXPProgress() {
         const transactions = result.data.transaction;
         console.log('XP Transactions:', transactions); // Log the transactions
 
-        progressFiller(transactions); // Use the new function
+        FillProgressGraph(transactions); // Use the new function
     } catch (error) {
         console.error('Error fetching XP progress:', error);
     }
 }
 
-function progressFiller(progressInfo) {
+function FillProgressGraph(progressInfo) {
     const XPOverTime = document.getElementById("XPOverTime");
     if (!XPOverTime || !progressInfo.length) return;
     const svgNS = "http://www.w3.org/2000/svg";
@@ -202,6 +179,7 @@ function progressFiller(progressInfo) {
     const width = 800 - 2 * padding;
     const height = 400 - 2 * padding;
 
+    //Cumulative XP Calculation
     let cumulativeXP = 0;
     const cumulativeData = progressInfo.map((point) => ({
         createdAt: new Date(point.createdAt),
@@ -209,12 +187,14 @@ function progressFiller(progressInfo) {
         projectName: point.object.name,
     }));
 
+    //Extracting Dates: and xp max and min
     const dates = progressInfo.map((p) => new Date(p.createdAt).getTime());
     const xMin = new Date(Math.min(...dates));
     const xMax = new Date(Math.max(...dates));
     const yMin = 0;
     const yMax = Math.max(...cumulativeData.map((p) => p.amount));
-
+    
+    //Drawing the Axes
     const xAxis = document.createElementNS(svgNS, "line");
     xAxis.setAttribute("x1", padding);
     xAxis.setAttribute("y1", height + padding);
@@ -231,6 +211,7 @@ function progressFiller(progressInfo) {
     yAxis.setAttribute("stroke", "#ffffff");
     svg.appendChild(yAxis);
 
+    //Adding Y-Axis Labels and Grid Lines
     for (let i = 0; i <= 5; i++) {
         const y = height + padding - (i * height) / 5;
         const value = Math.round((yMax * i) / 5);
@@ -240,7 +221,7 @@ function progressFiller(progressInfo) {
         label.setAttribute("text-anchor", "end");
         label.setAttribute("fill", "#ffffff");
         label.setAttribute("class", "axis-label");
-        label.textContent = value;
+        label.textContent = formatXP(value);
         svg.appendChild(label);
 
         const gridLine = document.createElementNS(svgNS, "line");
@@ -253,6 +234,7 @@ function progressFiller(progressInfo) {
         svg.appendChild(gridLine);
     }
 
+    //Adding X-Axis Date Labels
     const numDateLabels = 5;
     for (let i = 0; i <= numDateLabels; i++) {
         const x = padding + (i * width) / numDateLabels;
@@ -266,7 +248,7 @@ function progressFiller(progressInfo) {
         label.textContent = date.toLocaleDateString();
         svg.appendChild(label);
     }
-
+    //Plotting Data Points
     cumulativeData.forEach((point, index) => {
         const x = padding + ((point.createdAt - xMin) / (xMax - xMin)) * width;
         const y = height + padding - ((point.amount - yMin) / (yMax - yMin)) * height;
@@ -285,10 +267,11 @@ function progressFiller(progressInfo) {
             svg.appendChild(line);
         }
 
+        //A circle element is created for each data point
         const dot = document.createElementNS(svgNS, "circle");
         dot.setAttribute("cx", x);
         dot.setAttribute("cy", y);
-        dot.setAttribute("r", 4);
+        dot.setAttribute("r", 10);
         dot.setAttribute("class", "xp-dot animate-dot");
         dot.style.animationDelay = `${index * 0.01}s`;
 
@@ -298,7 +281,7 @@ function progressFiller(progressInfo) {
             tooltip.setAttribute("y", y - 20);
             tooltip.setAttribute("text-anchor", "middle");
             tooltip.setAttribute("class", "tooltip");
-            tooltip.textContent = point.amount;
+            tooltip.textContent = formatXP(point.amount);
             svg.appendChild(tooltip);
 
             const tooltip2 = document.createElementNS(svgNS, "text");
@@ -309,7 +292,7 @@ function progressFiller(progressInfo) {
             tooltip2.textContent = point.projectName;
             svg.appendChild(tooltip2);
         });
-
+        //Removing Tooltips event
         dot.addEventListener("mouseout", () => {
             const tooltip = svg.querySelector(".tooltip");
             if (tooltip) tooltip.remove();
@@ -324,11 +307,141 @@ function progressFiller(progressInfo) {
     XPOverTime.appendChild(svg);
 }
 
+// Fetch skills data
+async function fetchSkills() {
+    try {
+        const result = await client.query({
+            query: GET_USER_SKILLS,
+            variables: {
+                userId: localStorage.getItem("userId"),
+            },
+        });
+        console.log('Skills Data:', result.data); // Debugging: Log the entire data object
+        FillSkillsGraph(result.data.user.transactions);
+    } catch (error) {
+        console.error('Error fetching skills:', error);
+    }
+}
+
+function FillSkillsGraph(skillsInfo) {
+    console.log('Skills Info:', skillsInfo); // Debugging: Log the skills info
+    const technicalSkills = document.getElementById("technicalSkillsGraph");
+    const technologySkills = document.getElementById("technologySkillsGraph");
+
+    // Define categories based on your desired layout
+    const technical = [
+        "skill_prog", "skill_algo", "skill_sys-admin", "skill_front-end",
+        "skill_back-end", "skill_game", "skill_tcp"
+        ]; // Technical skills
+        const technologies = [
+        "skill_go", "skill_js", "skill_html", "skill_css",
+        "skill_unix", "skill_docker", "skill_sql"
+        ]; //
+
+    // Separate transactions into categories
+    const technicalTransactions = skillsInfo.filter((t) =>
+        technical.includes(t.type)
+    );
+    const technologyTransactions = skillsInfo.filter((t) =>
+        technologies.includes(t.type)
+    );
+
+    if (!technicalTransactions.length && !technologyTransactions.length) {
+        console.error("No skills info found!");
+        return;
+    }
+
+    // Sort technical transactions based on the order in the technical array
+    const sortedTechnicalTransactions = technical.map(skill => 
+        technicalTransactions.find(t => t.type === skill)
+    ).filter(Boolean); // Filter out any undefined values
+
+    if (sortedTechnicalTransactions.length) {
+        drawSkillsChart(sortedTechnicalTransactions, technicalSkills, "Technical Skills");
+    }
+
+    // Sort technology transactions based on the order in the technologies array
+    const sortedTechnologyTransactions = technologies.map(skill => 
+        technologyTransactions.find(t => t.type === skill)
+    ).filter(Boolean); // Filter out any undefined values
+
+    if (sortedTechnologyTransactions.length) {
+        drawSkillsChart(sortedTechnologyTransactions, technologySkills, "Technology Skills");
+    }
+}
+
+function drawSkillsChart(transactions, targetContainer) {
+    const pointCount = transactions.length;
+    if (pointCount === 0) return;
+
+    const maxValue = 100;
+    const centerX = 150, centerY = 150, chartRadius = 100;
+    const svgNamespace = "http://www.w3.org/2000/svg";
+    const svg = document.createElementNS(svgNamespace, "svg");
+    svg.setAttribute("viewBox", "0 0 300 300");
+    svg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+
+    // Draw background circles
+    [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1].forEach((scale) => {
+        const circle = document.createElementNS(svgNamespace, "circle");
+        circle.setAttribute("cx", centerX);
+        circle.setAttribute("cy", centerY);
+        circle.setAttribute("r", chartRadius * scale);
+        circle.setAttribute("class", "radar-circle");
+        svg.appendChild(circle);
+    });
+
+    // Draw axes and labels
+    transactions.forEach((point, idx) => {
+        const angle = (idx / pointCount) * (2 * Math.PI) - Math.PI / 2;
+        const endX = centerX + chartRadius * Math.cos(angle);
+        const endY = centerY + chartRadius * Math.sin(angle);
+
+        // Draw axis line
+        const axisLine = document.createElementNS(svgNamespace, "line");
+        axisLine.setAttribute("x1", centerX);
+        axisLine.setAttribute("y1", centerY);
+        axisLine.setAttribute("x2", endX);
+        axisLine.setAttribute("y2", endY);
+        axisLine.setAttribute("class", "radar-axis");
+        svg.appendChild(axisLine);
+
+        // Create skill label
+        const labelOffset = chartRadius + 20;
+        const labelX = centerX + labelOffset * Math.cos(angle);
+        const labelY = centerY + labelOffset * Math.sin(angle);
+        const skillLabel = point.type.replace("skill_", "").replace("-", " ");
+        const labelText = document.createElementNS(svgNamespace, "text");
+        labelText.setAttribute("x", labelX);
+        labelText.setAttribute("y", labelY);
+        labelText.setAttribute("class", "skill-label");
+        labelText.setAttribute("text-anchor", "middle");
+        labelText.textContent = skillLabel;
+        svg.appendChild(labelText);
+    });
+
+    // Draw data polygon
+    const polygonPoints = transactions.map((point, idx) => {
+        const angle = (idx / pointCount) * (2 * Math.PI) - Math.PI / 2;
+        const value = (point.amount / maxValue) * chartRadius;
+        return `${centerX + value * Math.cos(angle)},${centerY + value * Math.sin(angle)}`;
+    }).join(" ");
+
+    const radarPolygon = document.createElementNS(svgNamespace, "polygon");
+    radarPolygon.setAttribute("points", polygonPoints);
+    radarPolygon.setAttribute("class", "radar-area");
+    svg.appendChild(radarPolygon);
+
+    // Render the chart
+    targetContainer.innerHTML = "";
+    targetContainer.appendChild(svg);
+}
+
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     handleAuth();
     fetchUserData().then(() => {
-        fetchUserRank();
-        fetchXPProgress(); // Fetch XP progress
+        fetchXPProgress();
+        fetchSkills(); // Fetch skills data
     });
 });
