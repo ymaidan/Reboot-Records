@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
-import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION, GET_USER_XP_HISTORY, GET_USER_SKILLS } from '../graphql/queries.js';
+import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION, GET_USER_XP_HISTORY, GET_USER_SKILLS ,GET_USER_AUDITS} from '../graphql/queries.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
 import { checkAuth as validateAuth } from '/src/public/logout.js';
 
@@ -437,6 +437,97 @@ function drawSkillsChart(transactions, targetContainer) {
     targetContainer.appendChild(svg);
 }
 
+async function audits() {
+	try {
+		const result = await client.query({
+			query: GET_USER_AUDITS,
+		});
+		return result.data.user[0];
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+
+function auditsFiller(auditsInfo) {
+	const usrAudits = document.getElementById("usrAudits");
+	const passed = document.getElementById("passedPlc");
+	const failed = document.getElementById("failedPlc");
+
+	if (usrAudits && auditsInfo) {
+		// Handle passed audits
+		if (passed && Array.isArray(auditsInfo.passed)) {
+			if (auditsInfo.passed.length === 0) {
+				const noAudits = document.createElement("div");
+				noAudits.className = "audit-card";
+				noAudits.innerHTML =
+					'<div class="audit-info"><div class="no-audits">No Passing Audits Yet!</div></div>';
+				passed.appendChild(noAudits);
+			} else {
+				auditsInfo.passed.forEach((audit) => {
+					const auditCard = document.createElement("div");
+					auditCard.className = "audit-card";
+
+					const auditInfo = document.createElement("div");
+					auditInfo.className = "audit-info";
+
+					const groupLeader = document.createElement("div");
+					groupLeader.className = "group-leader";
+					groupLeader.innerHTML = `<span class="label">Group Leader:</span> ${audit.group.captainLogin}`;
+
+					const projectName = document.createElement("div");
+					projectName.className = "project-name";
+					projectName.innerHTML = `<span class="label">Project:</span> ${audit.group.path.replace(
+						"/bahrain/bh-module/",
+						""
+					)}`;
+
+					auditInfo.appendChild(groupLeader);
+					auditInfo.appendChild(projectName);
+					auditCard.appendChild(auditInfo);
+
+					passed.appendChild(auditCard);
+				});
+			}
+		}
+
+		if (failed && Array.isArray(auditsInfo.failed)) {
+			if (auditsInfo.failed.length === 0) {
+				const noAudits = document.createElement("div");
+				noAudits.className = "audit-card";
+				noAudits.innerHTML =
+					'<div class="audit-info"><div class="no-audits">No Failing Audits Yet!</div></div>';
+				failed.appendChild(noAudits);
+			} else {
+				auditsInfo.failed.forEach((audit) => {
+					const auditCard = document.createElement("div");
+					auditCard.className = "audit-card";
+
+					const auditInfo = document.createElement("div");
+					auditInfo.className = "audit-info";
+
+					const groupLeader = document.createElement("div");
+					groupLeader.className = "group-leader";
+					groupLeader.innerHTML = `<span class="label">Group Leader:</span> ${audit.group.captainLogin}`;
+
+					const projectName = document.createElement("div");
+					projectName.className = "project-name";
+					projectName.innerHTML = `<span class="label">Project:</span> ${audit.group.path.replace(
+						"/bahrain/bh-module/",
+						""
+					)}`;
+
+					auditInfo.appendChild(groupLeader);
+					auditInfo.appendChild(projectName);
+					auditCard.appendChild(auditInfo);
+
+					failed.appendChild(auditCard);
+				});
+			}
+		}
+	}
+}
+		
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     handleAuth();
@@ -444,4 +535,16 @@ document.addEventListener('DOMContentLoaded', () => {
         fetchXPProgress();
         fetchSkills(); // Fetch skills data
     });
+});
+
+// Initialize page when DOM is loaded
+document.addEventListener('DOMContentLoaded', async () => {
+    handleAuth();
+    await fetchUserData();
+    await fetchXPProgress();
+    await fetchSkills(); // Fetch skills data
+
+    // Fetch and fill audits data
+    const auditsInfo = await audits();
+    auditsFiller(auditsInfo);
 });

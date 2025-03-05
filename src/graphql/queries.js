@@ -110,3 +110,22 @@ export const GET_USER_XP_HISTORY = gql`
 		}
 	}
 `;
+
+export const GET_USER_AUDITS = gql`
+	query getUserAudits {
+		user {
+			passed: audits(where: { grade: { _gte: 1 } }) {
+				group {
+					captainLogin
+					path
+				}
+			}
+			failed: audits(where: { grade: { _lt: 1 } }) {
+				group {
+					captainLogin
+					path
+				}
+			}
+		}
+	}
+`;

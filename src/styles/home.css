@@ -247,16 +247,58 @@ body {
     gap: 3rem;
 }
 
+/* home.css */
+
+/* General styles for audit sections */
 .audit-section {
-    padding: 2rem;
-    min-height: 300px;
+    margin: 20px 0;
+    padding: 20px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    max-height: 300px; /* Set a fixed height */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
-.audit-title {
-    color: var(--primary-color);
-    margin-bottom: 1.5rem;
-    font-size: 1.4rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+/* Title styles */
+
+
+/* Individual audit card styles */
+.audit-card {
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.2); /* Slightly more opaque */
+    color: #ffffff; /* White text */
+    transition: background-color 0.3s;
+}
+
+.audit-card:hover {
+    background-color: rgba(255, 255, 255, 0.3); /* Change background on hover */
+}
+
+/* Label styles */
+.label {
+    font-weight: bold;
+}
+
+/* No audits message styles */
+.no-audits {
+    text-align: center;
+    font-size: 18px;
+    color: #ffcc00; /* Yellow color for no audits message */
+}
+
+.audit-section {
+    margin-bottom: 20px; /* Space between sections */
+}
+
+.audit-container {
+    max-height: 200px; /* Set a fixed height */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ccc; /* Optional: Add a border */
+    padding: 10px; /* Optional: Add some padding */
+    background-color: #f9f9f9; /* Optional: Background color */
 }
 
 /* Responsive Design */
