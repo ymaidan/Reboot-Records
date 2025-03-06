@@ -72,10 +72,11 @@ body {
     /* Glowing brand text effect */
     font-size: 1.5rem;
     font-weight: bold;
-    color: var(--text-primary);
+    color: var(--primary-color);
     text-shadow: 0 0 10px var(--primary-color);
     position: relative;
-    animation: glow 2s ease-in-out infinite;
+    animation: glow 1s ease-in-out infinite;
+    font-family: 'Poppins', sans-serif; /* Add this line */
 }
 
 @keyframes glow {
