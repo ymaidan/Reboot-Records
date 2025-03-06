@@ -680,6 +680,36 @@ async function fetchAuditRatio() {
     }
 }
 
+// Function to load user profile image
+function loadUserProfileImage(imageUrl) {
+    const imgContainer = document.getElementById('imgContainer');
+    if (!imgContainer) return;
+    
+    // Clear existing content
+    imgContainer.innerHTML = '';
+    
+    // Create image element
+    const img = document.createElement('img');
+    img.alt = 'User Profile';
+    
+    // Handle image loading or fallback to placeholder
+    if (imageUrl) {
+        img.src = imageUrl;
+        img.onerror = function() {
+            // If image fails to load, use placeholder
+            this.src = '/src/assets/placeholder.png';
+            console.log('Failed to load user image, using placeholder');
+        };
+    } else {
+        // No image URL provided, use placeholder
+        img.src = '/src/assets/placeholder.png';
+    }
+    
+    // Append image to container
+    imgContainer.appendChild(img);
+    console.log('User image loaded:', imageUrl || 'placeholder');
+}
+
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
     handleAuth();

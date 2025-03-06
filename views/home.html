@@ -5,8 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GraphQL Profile</title>
     <link rel="stylesheet" href="/src/styles/home.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
-<body>
+<body class="dark-theme">
     <div class="particles">
         <div class="particle large" style="left: 5%; animation-delay: 0s;"></div>
         <div class="particle large" style="left: 25%; animation-delay: 4s;"></div>
@@ -29,9 +31,13 @@
 
     <nav class="top-nav">
         <div class="nav-brand">Reboot Records</div>
-        <form id="logoutForm">
-            <button type="submit" id="logoutButton">Logout</button>
-        </form>
+        <div class="nav-controls">
+            <button id="themeToggle" class="theme-toggle">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
+            <button id="logoutButton">Logout</button>
+        </div>
     </nav>
 
     <div class="container">
@@ -91,6 +97,8 @@
 
     <script type="module" src="/src/public/home.js"></script>
     <script type="module" src="/src/public/logout.js"></script>
+    <script type="module" src="/src/public/theme-switcher.js"></script>
+    <script type="module" src="/src/public/theme-handler.js"></script>
 </body>
 </html>
 

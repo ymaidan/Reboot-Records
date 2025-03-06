@@ -5,18 +5,41 @@
    - Spacing and timing values
 ============================================== */
 :root {
-    /* Main theme colors */
-    --primary-color: #6366f1;      /* Purple-blue for primary elements */
-    --secondary-color: #4338ca;    /* Darker purple for hover states */
-    --background-dark: #1a1a1a;    /* Dark background */
-    --text-primary: #ffffff;        /* White text */
-    --text-secondary: #a0a0a0;     /* Gray text for subtitles */
+    /* Dark theme variables (your original purple design) */
+    --bg-primary: #1a1a2e;
+    --bg-secondary: #2c2946;
+    --text-primary: #ffffff;
+    --text-secondary: #b8b8b8;
+    --accent-color: rgba(95, 90, 230, 1);
+    --accent-color-light: rgba(150, 145, 255, 0.8);
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
+    --border-radius: 8px;
+    --card-bg: rgba(44, 41, 70, 0.9);
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --glass-background: rgba(30, 30, 50, 0.7);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    
+    /* Graph-specific colors - dark theme */
+    --graph-line-color: #6b6bff;
+    --graph-dot-color: #8282ff;
+    --graph-axis-color: #ffffff;
+    --graph-text-color: #ffffff;
+    --graph-grid-color: rgba(255, 255, 255, 0.1);
+    --done-bar-color: #eeede5;
+    --received-bar-color: #ffffff;
+    --ratio-color: #f3f1e9;
+    --area-fill-color: rgba(107, 107, 255, 0.5);
+    --area-stroke-color: #6b6bff;
+    
+    /* Audit card colors - dark theme */
+    --passed-audit-bg: rgba(44, 41, 70, 0.9);
+    --failed-audit-bg: rgba(44, 41, 70, 0.9);
+    --audit-card-bg: rgba(255, 255, 255, 0.2);
+    --audit-card-hover: rgba(255, 255, 255, 0.3);
 
     /* Glass effect and UI properties */
     --card-background: rgba(255, 255, 255, 0.1);  /* Transparent white for cards */
-    --glass-background: rgba(255, 255, 255, 0.1); /* Glass effect background */
-    --glass-border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for glass effect */
-    --border-radius: 12px;         /* Consistent corner rounding */
     --transition-speed: 0.3s;      /* Standard animation duration */
 }
 
@@ -46,6 +69,8 @@ body {
     min-height: 100vh;
     position: relative;
     overflow-x: hidden;
+    background-color: var(--bg-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ==============================================
@@ -168,8 +193,15 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #4964a7; /* Fallback color */
+    background-color: var(--bg-secondary);
     margin: 0 auto;
+}
+
+#imgContainer img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 #infoContainer {
@@ -213,12 +245,11 @@ body {
 }
 
 .glass-card {
-    background: var(--glass-background);
-    backdrop-filter: blur(10px);
+    background-color: var(--card-bg);
     border-radius: var(--border-radius);
-    border: var(--glass-border);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .glass-card:hover {
@@ -292,7 +323,7 @@ body {
 
 .audit-bar-container {
     height: 15px;
-    background-color: rgba(50, 50, 60, 0.5);
+    background-color: var(--bg-secondary);
     border-radius: 10px;
     overflow: hidden;
     width: 100%;
@@ -305,11 +336,11 @@ body {
 }
 
 .done-bar {
-    background-color: #e9e6de; /* Yellow/gold color */
+    background-color: var(--done-bar-color);
 }
 
 .received-bar {
-    background-color: white;
+    background-color: var(--received-bar-color);
 }
 
 .audit-value {
@@ -320,11 +351,11 @@ body {
 }
 
 .arrow-up {
-    color: #875697;
+    color: var(--ratio-color);
 }
 
 .arrow-down {
-    color: #875697;
+    color: var(--received-bar-color);
 }
 
 .ratio-section {
@@ -337,11 +368,11 @@ body {
 .ratio-value {
     font-size: 3.5rem;
     font-weight: bold;
-    color: #e7e6df;
+    color: var(--ratio-color);
 }
 
 .ratio-message {
-    color: #875697;
+    color: var(--ratio-color);
     font-size: 1.2rem;
 }
 
@@ -361,13 +392,13 @@ body {
     margin: 10px 0;
     padding: 15px;
     border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.2); /* Slightly more opaque */
-    color: #ffffff; /* White text */
+    background-color: var(--audit-card-bg);
+    color: var(--text-primary);
     transition: background-color 0.3s;
 }
 
 .audit-card:hover {
-    background-color: rgba(255, 255, 255, 0.3); /* Change background on hover */
+    background-color: var(--audit-card-hover);
 }
 
 /* Label styles */
@@ -379,7 +410,7 @@ body {
 .no-audits {
     text-align: center;
     font-size: 18px;
-    color: #ffcc00; /* Yellow color for no audits message */
+    color: #f2f1ee; /* Yellow color for no audits message */
 }
 
 .audit-section {
@@ -496,14 +527,14 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.2);
+    background: var(--bg-secondary);
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
     background: var(--primary-color);
     border-radius: 5px;
-    border: 2px solid rgba(0, 0, 0, 0.2);
+    border: 2px solid var(--bg-secondary);
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -512,7 +543,7 @@ body {
 
 /* XP Progress Graph Styling */
 .xp-line {
-    stroke: #6b6bff;
+    stroke: var(--graph-line-color);
     stroke-width: 2;
     stroke-dasharray: 1000;
     stroke-dashoffset: 1000;
@@ -521,8 +552,8 @@ body {
 
 .xp-dot {
     r: 5;
-    fill: #6b6bff;
-    stroke: #121212;
+    fill: var(--graph-dot-color);
+    stroke: var(--bg-primary);
     stroke-width: 2;
     opacity: 0;
     animation: fadeIn 0.5s ease forwards;
@@ -531,7 +562,7 @@ body {
 }
 
 .xp-dot:hover {
-    fill: #8282ff;
+    fill: var(--accent-color-light);
     r: 10;
 }
 
@@ -549,22 +580,22 @@ body {
 
 .radar-circle {
     fill: none;
-    stroke: rgba(255, 255, 255, 0.1);
+    stroke: var(--graph-grid-color);
 }
 
 .radar-axis {
-    stroke: #ffffff;
+    stroke: var(--graph-axis-color);
     stroke-width: 1;
 }
 
 .skill-label {
-    fill: #ffffff;
+    fill: var(--graph-text-color);
     font-size: 10px;
 }
 
 .radar-area {
-    fill: rgba(107, 107, 255, 0.5);
-    stroke: #6b6bff;
+    fill: var(--area-fill-color);
+    stroke: var(--area-stroke-color);
     stroke-width: 2;
 }
 
@@ -572,3 +603,205 @@ body {
 /* .rank-display {
     // styles for rank display
 } */
+
+/* Light theme overrides - more readable */
+body.light-theme {
+    --bg-primary: #f5f7fa;
+    --bg-secondary: #e9edf5;
+    --text-primary: #334155;
+    --text-secondary: #64748b;
+    --accent-color: #6366f1;
+    --accent-color-light: #818cf8;
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
+    --card-bg: rgba(255, 255, 255, 0.9);
+    --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+    --glass-background: rgba(255, 255, 255, 0.7);
+    --glass-border: 1px solid rgba(255, 255, 255, 0.3);
+    
+    /* Graph-specific colors - light theme */
+    --graph-line-color: #4f46e5;
+    --graph-dot-color: #6366f1;
+    --graph-axis-color: #334155;
+    --graph-text-color: #334155;
+    --graph-grid-color: rgba(100, 116, 139, 0.2);
+    --done-bar-color: #475569;
+    --received-bar-color: #475569;
+    --ratio-color: #475569;
+    --area-fill-color: rgba(99, 102, 241, 0.3);
+    --area-stroke-color: #4f46e5;
+    
+    /* Audit card colors - light theme */
+    --passed-audit-bg: rgba(249, 250, 251, 0.9);
+    --failed-audit-bg: rgba(249, 250, 251, 0.9);
+    --audit-card-bg: rgba(30, 41, 59, 0.1);
+    --audit-card-hover: rgba(30, 41, 59, 0.15);
+}
+
+/* Nav controls to align items */
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+/* Theme toggle button styling */
+.theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--accent-color-light);
+    transform: translateY(-2px);
+}
+
+.theme-toggle #themeIcon {
+    font-size: 1.2rem;
+}
+
+/* Update glass card for theme compatibility */
+.glass-card {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    overflow: hidden;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Theme-compatible styles for other elements */
+header {
+    background-color: var(--bg-secondary);
+    transition: background-color 0.3s ease;
+}
+
+.audit-bar-container {
+    background-color: var(--bg-secondary);
+}
+
+/* Theme-aware text colors */
+.graph-title, .audit-label, .audit-value {
+    color: var(--text-primary);
+}
+
+/* Responsive adjustment for theme toggle */
+@media (max-width: 480px) {
+    .theme-toggle #themeText {
+        display: none;
+    }
+    
+    .theme-toggle {
+        padding: 0.5rem;
+    }
+}
+
+/* Apply theme to chart elements */
+.audit-bar-container {
+    background-color: var(--bg-secondary);
+}
+
+.done-bar {
+    background-color: var(--done-bar-color);
+}
+
+.received-bar {
+    background-color: var(--received-bar-color);
+}
+
+.ratio-value, .ratio-message, .arrow-up {
+    color: var(--ratio-color);
+}
+
+.arrow-down {
+    color: var(--received-bar-color);
+}
+
+/* Skills graph styling */
+.radar-circle {
+    fill: none;
+    stroke: var(--graph-grid-color);
+}
+
+.radar-axis {
+    stroke: var(--graph-axis-color);
+    stroke-width: 1;
+}
+
+.skill-label {
+    fill: var(--graph-text-color);
+    font-size: 10px;
+}
+
+.radar-area {
+    fill: var(--area-fill-color);
+    stroke: var(--area-stroke-color);
+    stroke-width: 2;
+}
+
+/* XP Progress Graph Styling */
+.xp-line {
+    stroke: var(--graph-line-color);
+    stroke-width: 2;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: drawLine 1.5s ease forwards;
+}
+
+.xp-dot {
+    r: 5;
+    fill: var(--graph-dot-color);
+    stroke: var(--bg-primary);
+    stroke-width: 2;
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+    cursor: pointer;
+    transition: r 0.2s ease;
+}
+
+.xp-dot:hover {
+    fill: var(--accent-color-light);
+    r: 10;
+}
+
+/* Audit cards styling */
+#passedAudits, #failedAudits {
+    background-color: var(--card-bg);
+}
+
+.audit-card {
+    background-color: var(--audit-card-bg);
+    color: var(--text-primary);
+}
+
+.audit-card:hover {
+    background-color: var(--audit-card-hover);
+}
+
+/* SVG Text elements */
+text {
+    fill: var(--graph-text-color) !important;
+}
+
+/* Ensure all SVG paths and lines adapt to theme */
+svg path, svg line {
+    transition: stroke 0.3s ease, fill 0.3s ease;
+}
+
+/* Make sure all card content is visible in both themes */
+.glass-card {
+    background-color: var(--card-bg);
+    color: var(--text-primary);
+}
+
+/* Ensure consistent styling across themes */
+#auditRatioGraph, #technicalSkills, #technologySkills, #XPOverTimeGraph, #passedAudits, #failedAudits {
+    background-color: var(--card-bg);
+}
