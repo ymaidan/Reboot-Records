@@ -16,12 +16,11 @@ function handleAuth() {
 // Fetch user data using Apollo Client
 async function fetchUserData() {
     const token = localStorage.getItem('jwt_token');
-    console.log('JWT Token:', token); // Log the token to check its format
+    console.log('JWT Token:', token);
 
-    // Check if the token is valid (not null or empty)
     if (!token || token.startsWith('"') || token.endsWith('"')) {
         console.error('Invalid JWT token found. User is not authenticated.');
-        return; // Exit if no valid token is found
+        return;
     }
 
     try {
@@ -29,14 +28,13 @@ async function fetchUserData() {
             query: GET_USER_INFO,
             context: {
                 headers: {
-                    Authorization: `Bearer ${token}`, // Ensure the token is sent correctly
+                    Authorization: `Bearer ${token}`,
                 },
             },
         });
 
-        console.log('User data received:', data); // Log the received data
+        console.log('User data received:', data);
 
-        // Check if user data is present
         if (!data || !data.user || !data.user.length) {
             throw new Error('No user data received');
         }
@@ -61,6 +59,8 @@ async function fetchUserData() {
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
             auditRatio: user.auditRatio,
+            totalUp: user.totalUp || 0,
+            totalDown: user.totalDown || 0,
             campus: user.public.campus,
             level: levelExists ? level : 'N/A',
             xp: user.transactions_aggregate.aggregate.sum.amount || 0,
@@ -84,9 +84,11 @@ async function fetchUserData() {
 
         console.log("Profile Image URL:", userData.imageId); // Log the profile image URL
 
-         updateProfileHeader(userData);
+        updateProfileHeader(userData);
         await updateProfileImage(userData.imageId);
         
+        drawAuditRatioGraph(userData);
+
     } catch (error) {
         console.error('Error fetching user data:', error);
     }
@@ -438,14 +440,18 @@ function drawSkillsChart(transactions, targetContainer) {
 }
 
 async function audits() {
-	try {
-		const result = await client.query({
-			query: GET_USER_AUDITS,
-		});
-		return result.data.user[0];
-	} catch (error) {
-		console.error(error);
-	}
+    try {
+        const result = await client.query({
+            query: GET_USER_AUDITS,
+            variables: {
+                userId: localStorage.getItem("userId"),
+            },
+        });
+        console.log('Fetched audits:', result.data.user); // Debugging: Log the fetched audits
+        return result.data.user[0];
+    } catch (error) {
+        console.error('Error fetching audits:', error);
+    }
 }
 
 
@@ -520,7 +526,6 @@ function auditsFiller(auditsInfo) {
 					auditInfo.appendChild(groupLeader);
 					auditInfo.appendChild(projectName);
 					auditCard.appendChild(auditInfo);
-
 					failed.appendChild(auditCard);
 				});
 			}
@@ -528,22 +533,163 @@ function auditsFiller(auditsInfo) {
 	}
 }
 		
-// Initialize page when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    handleAuth();
-    fetchUserData().then(() => {
-        fetchXPProgress();
-        fetchSkills(); // Fetch skills data
-    });
-});
+function drawAuditRatioGraph(userData) {
+    const container = document.getElementById('auditGraphContainer');
+    if (!container) {
+        console.error('Container not found');
+        return;
+    }
+    
+    // Clear the container
+    container.innerHTML = '';
+
+    // Create wrapper
+    const auditWrapper = document.createElement('div');
+    auditWrapper.className = 'audit-wrapper';
+    
+    // Create title
+    const title = document.createElement('h2');
+    title.textContent = 'Audits ratio';
+    title.className = 'audit-title';
+    auditWrapper.appendChild(title);
+
+    // Create "Done" section
+    const doneSection = document.createElement('div');
+    doneSection.className = 'audit-row';
+    
+    const doneLabel = document.createElement('div');
+    doneLabel.className = 'audit-label';
+    doneLabel.textContent = 'Done';
+    doneSection.appendChild(doneLabel);
+    
+    const doneBarContainer = document.createElement('div');
+    doneBarContainer.className = 'audit-bar-container';
+    
+    const doneBar = document.createElement('div');
+    doneBar.className = 'audit-bar done-bar';
+    doneBarContainer.appendChild(doneBar);
+    doneSection.appendChild(doneBarContainer);
+    
+    const doneValue = document.createElement('div');
+    doneValue.className = 'audit-value';
+    
+    // Format the done value - simplify to just show MB
+    const doneAmount = userData.totalUp || 0;
+    // Convert to MB with 2 decimal places
+    const doneMB = (doneAmount / 1000).toFixed(2);
+    
+    doneValue.innerHTML = `${doneMB} MB <span class="arrow-up">↑</span>`;
+    doneSection.appendChild(doneValue);
+    
+    // Create "Received" section
+    const receivedSection = document.createElement('div');
+    receivedSection.className = 'audit-row';
+    
+    const receivedLabel = document.createElement('div');
+    receivedLabel.className = 'audit-label';
+    receivedLabel.textContent = 'Received';
+    receivedSection.appendChild(receivedLabel);
+    
+    const receivedBarContainer = document.createElement('div');
+    receivedBarContainer.className = 'audit-bar-container';
+    
+    const receivedBar = document.createElement('div');
+    receivedBar.className = 'audit-bar received-bar';
+    receivedBarContainer.appendChild(receivedBar);
+    receivedSection.appendChild(receivedBarContainer);
+    
+    const receivedValue = document.createElement('div');
+    receivedValue.className = 'audit-value';
+    
+    // Format the received value - simplify to just show MB
+    const receivedAmount = userData.totalDown || 0;
+    // Convert to MB with 2 decimal places
+    const receivedMB = (receivedAmount / 1000).toFixed(2);
+    
+    receivedValue.innerHTML = `${receivedMB} MB <span class="arrow-down">↓</span>`;
+    receivedSection.appendChild(receivedValue);
+    
+    // Create ratio display
+    const ratioSection = document.createElement('div');
+    ratioSection.className = 'ratio-section';
+    
+    // Calculate ratio with more precision
+    const ratio = receivedAmount > 0 ? doneAmount / receivedAmount : 0;
+    
+    const ratioValue = document.createElement('div');
+    ratioValue.className = 'ratio-value';
+    ratioValue.textContent = ratio.toFixed(1);
+    
+    const ratioMessage = document.createElement('div');
+    ratioMessage.className = 'ratio-message';
+    ratioMessage.textContent = 'You can do better!';
+    
+    ratioSection.appendChild(ratioValue);
+    ratioSection.appendChild(ratioMessage);
+    
+    // Set bar widths based on values
+    const maxAmount = Math.max(doneAmount, receivedAmount);
+    if (maxAmount > 0) {
+        const doneWidth = (doneAmount / maxAmount) * 100;
+        const receivedWidth = (receivedAmount / maxAmount) * 100;
+        
+        doneBar.style.width = `${doneWidth}%`;
+        receivedBar.style.width = `${receivedWidth}%`;
+    }
+    
+    // Assemble everything
+    auditWrapper.appendChild(doneSection);
+    auditWrapper.appendChild(receivedSection);
+    auditWrapper.appendChild(ratioSection);
+    
+    container.appendChild(auditWrapper);
+}
+
+async function fetchAuditRatio() {
+    const jwt = localStorage.getItem('jwt_token');
+    console.log('JWT Token for audit ratio:', jwt);
+    
+    try {
+        const response = await fetch('https://learn.reboot01.com/api/graphql-engine/v1/graphql', {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${jwt}` 
+            },
+            body: JSON.stringify({
+                query: `{ user { auditRatio totalUp totalDown } }`
+            })
+        });
+        const data = await response.json();
+        console.log('Audit Ratio Response:', data);
+
+        if (data.data && Array.isArray(data.data.user) && data.data.user.length > 0) {
+            const user = data.data.user[0];
+            console.log('Audit data:', user.totalUp, user.totalDown, user.auditRatio);
+            
+            // Draw the graph with the fetched data
+            drawAuditRatioGraph({
+                totalUp: user.totalUp || 0,
+                totalDown: user.totalDown || 0
+            });
+        } else {
+            console.error('No data available');
+        }
+    } catch (error) {
+        console.error('Error fetching audit ratio:', error);
+    }
+}
 
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
     handleAuth();
     await fetchUserData();
     await fetchXPProgress();
-    await fetchSkills(); // Fetch skills data
-
+    await fetchSkills();
+    
+    // Fetch and display audit ratio
+    await fetchAuditRatio();
+    
     // Fetch and fill audits data
     const auditsInfo = await audits();
     auditsFiller(auditsInfo);

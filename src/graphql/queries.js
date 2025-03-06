@@ -31,6 +31,8 @@ export const GET_USER_INFO = gql`
 			lastName
 			email
 			auditRatio
+			totalDown
+            totalUp
 			attrs
 			events {
 				level

@@ -163,12 +163,12 @@ body {
     height: 250px;
     border-radius: 50%;
     overflow: hidden;
-    border: 4px solid var(--primary-color);
+    border: 1.5px solid var(--primary-color);
     box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ccc; /* Fallback color */
+    background-color: #4964a7; /* Fallback color */
     margin: 0 auto;
 }
 
@@ -249,6 +249,101 @@ body {
 }
 
 /* home.css */
+#auditRatioGraph {
+    padding: 2rem;
+    min-height: 300px;
+    max-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-primary);
+    background-color: rgba(53, 53, 78, 0.9);
+    border-radius: 12px;
+}
+
+.graph-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.audit-wrapper {
+    width: 100%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.audit-row {
+    display: grid;
+    grid-template-columns: 100px 1fr auto;
+    align-items: center;
+    gap: 1rem;
+}
+
+.audit-label {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+}
+
+.audit-bar-container {
+    height: 15px;
+    background-color: rgba(50, 50, 60, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.audit-bar {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.done-bar {
+    background-color: #e9e6de; /* Yellow/gold color */
+}
+
+.received-bar {
+    background-color: white;
+}
+
+.audit-value {
+    font-size: 1rem;
+    color: var(--text-primary);
+    text-align: right;
+    white-space: nowrap;
+}
+
+.arrow-up {
+    color: #875697;
+}
+
+.arrow-down {
+    color: #875697;
+}
+
+.ratio-section {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.ratio-value {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #e7e6df;
+}
+
+.ratio-message {
+    color: #875697;
+    font-size: 1.2rem;
+}
 
 /* General styles for audit sections */
 .audit-section {
@@ -260,9 +355,6 @@ body {
     max-height: 300px; /* Set a fixed height */
     overflow-y: auto; /* Enable vertical scrolling */
 }
-
-/* Title styles */
-
 
 /* Individual audit card styles */
 .audit-card {
@@ -365,6 +457,36 @@ body {
     #technicalSkills, #technologySkills, .audit-section {
         min-height: 250px;
         padding: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .audit-row {
+        grid-template-columns: 80px 1fr auto;
+    }
+    
+    .audit-value {
+        font-size: 0.9rem;
+    }
+    
+    .ratio-value {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .audit-row {
+        grid-template-columns: 70px 1fr auto;
+    }
+    
+    .audit-label {
+        font-size: 0.9rem;
+    }
+    
+    .ratio-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
     }
 }
 
