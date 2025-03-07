@@ -1,0 +1,326 @@
+/* ===== Footer Styles ===== */
+.site-footer {
+    position: relative;
+    margin-top: 4rem;
+    padding: 3rem 0 0;
+    color: var(--text-primary);
+    overflow: hidden;
+}
+
+.footer-content {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 1.5rem 6rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end; /* Align items to bottom */
+    width: 100%;
+}
+
+/* Left section with logo */
+.footer-left {
+    display: flex;
+    align-items: flex-end; /* Align to bottom */
+    margin-bottom: 2rem;
+}
+
+/* Center section with copyright */
+.footer-center {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* Right section with social links */
+.footer-right {
+    display: flex;
+    align-items: flex-end; /* Align to bottom */
+    margin-bottom: 2rem;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    font-size: 1.2rem;
+}
+
+/* Enhanced Logo Styling */
+.logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s ease;
+}
+
+/* Colorful gradient background that shifts on hover */
+.logo-icon::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+        #9c4dcc 0%, 
+        #5d2e8c 25%, 
+        #4d6ccc 50%, 
+        #2e598c 75%, 
+        #4d9ccc 100%);
+    background-size: 300% 300%;
+    animation: gradientFlow 8s ease infinite;
+    z-index: -1;
+}
+
+/* Subtle shine effect */
+.logo-icon::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        rgba(255, 255, 255, 0.2),
+        rgba(255, 255, 255, 0) 80%
+    );
+    transform: rotate(30deg);
+    transition: transform 0.7s ease;
+    z-index: -1;
+}
+
+/* Interactive hover effects */
+.footer-logo:hover .logo-icon {
+    transform: rotate(5deg) scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.footer-logo:hover .logo-icon::after {
+    transform: rotate(30deg) translate(10%, 10%);
+}
+
+/* Light theme adjustments */
+body.light-theme .logo-icon {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .logo-icon::before {
+    background: linear-gradient(135deg, 
+        #7928ca 0%, 
+        #5d2e8c 25%, 
+        #3e5cb2 50%, 
+        #2e598c 75%, 
+        #0084ff 100%);
+    background-size: 300% 300%;
+    animation: gradientFlow 8s ease infinite;
+}
+
+/* Keyframe animation for the flowing gradient */
+@keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.footer-copyright {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-tagline {
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+.footer-wave-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1;
+}
+
+.footer-wave {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.wave-path {
+    fill: var(--primary-color);
+    opacity: 0.15;
+    transition: fill 0.3s ease, opacity 0.3s ease;
+}
+
+body.light-theme .wave-path {
+    opacity: 0.2;
+}
+
+/* Social Links Styling */
+.footer-social {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end; /* Align to right */
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.social-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    transition: all 0.3s ease;
+    transform: translateY(100%);
+    border-radius: 50px;
+}
+
+.social-link:hover::before {
+    transform: translateY(0);
+}
+
+.social-link svg {
+    transition: transform 0.3s ease;
+}
+
+.social-link:hover svg {
+    transform: scale(1.2);
+}
+
+/* Theme-aware styling for social links */
+/* Dark theme */
+body.dark-theme .github {
+    background-color: #333;
+    color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-theme .github::before {
+    background-color: #2c2c2c;
+}
+
+body.dark-theme .linkedin {
+    background-color: #0077B5;
+    color: white;
+    box-shadow: 0 4px 8px rgba(8, 95, 144, 0.3);
+}
+
+body.dark-theme .linkedin::before {
+    background-color: #006396;
+}
+
+/* Light theme */
+body.light-theme .github {
+    background-color: #f6f8fa;
+    color: #24292e;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body.light-theme .github::before {
+    background-color: #e1e4e8;
+}
+
+body.light-theme .linkedin {
+    background-color: #e8f0fe;
+    color: #0a66c2;
+    box-shadow: 0 4px 6px rgba(10, 102, 194, 0.1);
+}
+
+body.light-theme .linkedin::before {
+    background-color: #cfe0fc;
+}
+
+/* Responsive adjustments for footer */
+@media (max-width: 992px) {
+    .footer-content {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+    
+    .footer-left, .footer-right {
+        flex-basis: 40%;
+    }
+    
+    .footer-center {
+        flex-basis: 100%;
+        order: 3;
+        margin-top: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .footer-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding-bottom: 5rem;
+    }
+    
+    .footer-left, .footer-center, .footer-right {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .footer-right {
+        order: 2;
+    }
+    
+    .footer-center {
+        order: 3;
+    }
+    
+    .footer-social {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .site-footer {
+        padding-top: 2rem;
+        margin-top: 3rem;
+    }
+    
+    .social-link {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .social-link svg {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .footer-social {
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+} 

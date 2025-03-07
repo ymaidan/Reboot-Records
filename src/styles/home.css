@@ -160,7 +160,10 @@ body {
 .container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
 }
 
 /* ==============================================
@@ -175,7 +178,7 @@ body {
     flex-wrap: wrap; /* Allow wrapping for smaller screens */
     gap: 3rem;
     padding: 3rem;
-    margin-bottom: 3rem;
+    margin-bottom: 2rem;
     background: var(--glass-background);
     backdrop-filter: blur(10px);
     border-radius: var(--border-radius);
@@ -242,6 +245,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 3rem;
+    margin-bottom: 2rem;
 }
 
 .glass-card {
@@ -265,6 +269,7 @@ body {
 #XPOverTimeGraph {
     padding: 2rem;
     min-height: 630px;
+    margin-bottom: 2rem;
 }
 
 .skills-graph {
@@ -276,7 +281,7 @@ body {
 #usrAudits {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    gap: 24px;
 }
 
 /* home.css */
@@ -291,6 +296,7 @@ body {
     color: var(--text-primary);
     background-color: rgba(53, 53, 78, 0.9);
     border-radius: 12px;
+    margin-bottom: 1.5rem;
 }
 
 .graph-container {
@@ -805,3 +811,182 @@ svg path, svg line {
 #auditRatioGraph, #technicalSkills, #technologySkills, #XPOverTimeGraph, #passedAudits, #failedAudits {
     background-color: var(--card-bg);
 }
+
+/* Audit sections scrolling */
+#passedAuditsSection, #failedAuditsSection {
+    max-height: 350px; /* Controls how many cards are visible before scrolling */
+    overflow-y: auto; /* Enables vertical scrolling */
+    padding-right: 5px; /* Space for scrollbar */
+}
+
+/* Audit card styling adjustments for scrolling */
+.audit-card {
+    margin-bottom: 10px; /* Space between cards */
+    padding: 15px; /* Internal padding */
+    border-radius: 8px; /* Rounded corners */
+    background-color: rgba(255, 255, 255, 0.1); /* Semi-transparent background */
+    transition: background-color 0.2s ease;
+}
+
+.audit-card:hover {
+    background-color: rgba(255, 255, 255, 0.15); /* Slightly lighter on hover */
+}
+
+/* Custom scrollbar styling */
+#passedAuditsSection::-webkit-scrollbar,
+#failedAuditsSection::-webkit-scrollbar {
+    width: 6px;
+}
+
+#passedAuditsSection::-webkit-scrollbar-track,
+#failedAuditsSection::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+#passedAuditsSection::-webkit-scrollbar-thumb,
+#failedAuditsSection::-webkit-scrollbar-thumb {
+    background-color: var(--primary-color);
+    border-radius: 3px;
+}
+
+/* Scrollable Audit Sections */
+.scrollable-audits {
+    max-height: 300px; /* Adjust height as needed */
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 8px; /* Space for scrollbar */
+}
+
+/* Style the scrollbar */
+.scrollable-audits::-webkit-scrollbar {
+    width: 6px;
+}
+
+.scrollable-audits::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 3px;
+}
+
+.scrollable-audits::-webkit-scrollbar-thumb {
+    background: var(--primary-color, #6366f1);
+    border-radius: 3px;
+}
+
+/* Style audit cards for better readability in scroll view */
+.audit-card {
+    margin-bottom: 8px;
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.2s;
+}
+
+.audit-card:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+.audit-card:last-child {
+    margin-bottom: 0;
+}
+
+/* Fix audit sections layout */
+#usrAudits {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+#passedAudits, #failedAudits {
+    min-height: 350px; /* Fixed height to ensure scrolling works properly */
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure audit sections are responsive */
+@media (max-width: 768px) {
+    #usrAudits {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Skills section layout (side by side) */
+#skillsGraphs .skills-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+/* Full width sections */
+#auditRatioGraph, #XPOverTimeGraph {
+  width: 100%;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  #skillsGraphs .skills-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Increase main container spacing */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+/* Add additional spacing between specific sections */
+.profile-header {
+    margin-bottom: 2rem;
+}
+
+#auditRatioGraph {
+    margin-bottom: 1.5rem;
+}
+
+#skillsGraphs {
+    margin-bottom: 2rem;
+}
+
+#XPOverTimeGraph {
+    margin-bottom: 2rem;
+}
+
+/* Increase gap between side-by-side elements */
+.side-by-side-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    width: 100%;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+    .container {
+        gap: 2.5rem;
+    }
+    
+    .side-by-side-section {
+        gap: 2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        gap: 2rem;
+    }
+    
+    .profile-header {
+        margin-bottom: 1.5rem;
+    }
+    
+    #auditRatioGraph, #skillsGraphs, #XPOverTimeGraph {
+        margin-bottom: 1rem;
+    }
+}
+

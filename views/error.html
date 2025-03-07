@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Reboot Records</title>
+    <link rel="stylesheet" href="/src/styles/error.css">
+</head>
+<body class="dark-theme">
+    <!-- Particles background -->
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 40%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 60%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 80%; animation-delay: 7s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
+    </div>
+
+    <!-- Main content container -->
+    <div class="container">
+        <div class="error-box">
+            <!-- Logo -->
+            <div class="logo">
+                <div class="logo-icon">RR</div>
+                <span class="logo-text">Reboot Records</span>
+            </div>
+
+            <!-- Error content -->
+            <div class="error-content">
+                <div class="error-code" id="errorCode">404</div>
+                <h1 class="error-title" id="errorTitle">Page Not Found</h1>
+                <p class="error-message" id="errorMessage">Oops! The page you're looking for doesn't exist or has been moved.</p>
+                
+                <!-- Illustration SVG -->
+                <div class="error-illustration">
+                    <svg id="errorSvg" viewBox="0 0 600 400" xmlns="http://www.w3.org/2000/svg">
+                        <!-- SVG content will be modified by JS based on error type -->
+                        <g class="error-scene">
+                            <!-- Default 404 illustration -->
+                            <path class="ground" d="M0,350 L600,350" stroke-width="2" />
+                            <path class="search-path" d="M150,200 Q300,100 450,200" stroke-dasharray="10,10" />
+                            <circle class="search-dot" cx="300" cy="150" r="50" />
+                            <circle class="search-handle" cx="220" cy="250" r="15" />
+                            <rect class="search-handle-stem" x="230" y="250" width="15" height="70" rx="5" transform="rotate(45, 230, 250)" />
+                        </g>
+                    </svg>
+                </div>
+                
+                <!-- Action button -->
+                <a href="/" class="back-button">Return to Homepage</a>
+            </div>
+
+            <!-- Theme toggle -->
+            <button id="themeToggle" class="theme-toggle">
+                <span id="themeIcon">🌙</span>
+                <span id="themeText">Dark</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="/src/public/error.js"></script>
+</body>
+</html>

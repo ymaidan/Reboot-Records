@@ -647,8 +647,6 @@ function drawAuditRatioGraph(userData) {
 
 async function fetchAuditRatio() {
     const jwt = localStorage.getItem('jwt_token');
-    console.log('JWT Token for audit ratio:', jwt);
-    
     try {
         const response = await fetch('https://learn.reboot01.com/api/graphql-engine/v1/graphql', {
             method: 'POST',
@@ -665,18 +663,19 @@ async function fetchAuditRatio() {
 
         if (data.data && Array.isArray(data.data.user) && data.data.user.length > 0) {
             const user = data.data.user[0];
-            console.log('Audit data:', user.totalUp, user.totalDown, user.auditRatio);
-            
-            // Draw the graph with the fetched data
-            drawAuditRatioGraph({
+            const userData = {
                 totalUp: user.totalUp || 0,
                 totalDown: user.totalDown || 0
-            });
+            };
+            drawAuditRatioGraph(userData);
+            return userData;
         } else {
             console.error('No data available');
+            return null;
         }
     } catch (error) {
         console.error('Error fetching audit ratio:', error);
+        return null;
     }
 }
 
@@ -710,6 +709,50 @@ function loadUserProfileImage(imageUrl) {
     console.log('User image loaded:', imageUrl || 'placeholder');
 }
 
+// Add this function to your home.js file
+function setupThemeListener() {
+    // Listen for theme changes
+    document.addEventListener('themeChanged', (event) => {
+        const theme = event.detail; // 'light' or 'dark'
+        console.log(`Theme changed to ${theme}, updating graphs...`);
+        
+        // Redraw charts that need theme-specific updates
+        updateChartsForTheme(theme);
+    });
+}
+
+function updateChartsForTheme(theme) {
+    // This function will redraw any charts that need theme-specific updates
+    
+    // If you have Chart.js instances stored in variables, update their options:
+    if (window.xpChart) {
+        window.xpChart.options.scales.x.grid.color = theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+        window.xpChart.options.scales.y.grid.color = theme === 'light' ? 'rgba(0,0,0,0.1)' : 'rgba(255,255,255,0.1)';
+        window.xpChart.options.scales.x.ticks.color = theme === 'light' ? '#334155' : '#ffffff';
+        window.xpChart.options.scales.y.ticks.color = theme === 'light' ? '#334155' : '#ffffff';
+        window.xpChart.update();
+    }
+    
+    // For D3 graphs, you might need to reapply styles:
+    if (document.querySelector('#technicalSkillsGraph svg')) {
+        const textColor = theme === 'light' ? '#334155' : '#ffffff';
+        d3.selectAll('#technicalSkillsGraph svg text').style('fill', textColor);
+        d3.selectAll('#technicalSkillsGraph svg line').style('stroke', theme === 'light' ? '#64748b' : '#b8b8b8');
+    }
+    
+    if (document.querySelector('#technologySkillsGraph svg')) {
+        const textColor = theme === 'light' ? '#334155' : '#ffffff';
+        d3.selectAll('#technologySkillsGraph svg text').style('fill', textColor);
+        d3.selectAll('#technologySkillsGraph svg line').style('stroke', theme === 'light' ? '#64748b' : '#b8b8b8');
+    }
+    
+    // Redraw the audit ratio graph
+    const userData = window.lastUserData;
+    if (userData && userData.totalUp !== undefined && userData.totalDown !== undefined) {
+        drawAuditRatioGraph(userData);
+    }
+}
+
 // Initialize page when DOM is loaded
 document.addEventListener('DOMContentLoaded', async () => {
     handleAuth();
@@ -723,4 +766,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Fetch and fill audits data
     const auditsInfo = await audits();
     auditsFiller(auditsInfo);
+    
+    // Set up theme change listener
+    setupThemeListener();
+    
+    // Store user data for potential redraws
+    const auditData = await fetchAuditRatio();
+    if (auditData) {
+        window.lastUserData = auditData;
+    }
 });
