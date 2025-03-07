@@ -65,10 +65,26 @@ A dynamic web application for tracking student progress and skills at Reboot01, 
 
 ## 📱 Screenshots
 
-<div align="center">
-  <img src="src/images/DarkTheme.png" width="145%" alt="Dashboard Dark Theme">
-  <img src="src/images/image.png" width="145%" alt="Skills Visualization">
-</div>
+### Login Page:
+
+![Picture](./src/images/login.png)
+
+### Dark Theme:
+
+![Picture](./src/images/DarkTheme.png)
+### Light Theme:
+
+![Picture](./src/images/L.png)
+
+### Tech skills:
+
+![Picture](./src/images/Skills.png)
+### Xp & Passed and Failed Audit:
+
+![Picture](./src/images/xp.png)
+### Footer:
+
+![Picture](./src/images/footer.png)
 
 ## 🌟 Features in Detail
 

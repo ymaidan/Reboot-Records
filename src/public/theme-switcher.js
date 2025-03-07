@@ -25,11 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Toggle theme when button is clicked
     themeToggle.addEventListener('click', () => {
-        if (document.body.classList.contains('light-theme')) {
-            setDarkTheme();
-        } else {
-            setLightTheme();
-        }
+        const body = document.body;
+        const isDark = body.classList.contains('dark-theme');
+        
+        // Toggle theme class
+        body.classList.toggle('dark-theme');
+        body.classList.toggle('light-theme');
+        
+        // Update icon and text
+        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeText.textContent = isDark ? 'Light' : 'Dark';
+        
+        // Save preference to localStorage
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        
+        // Dispatch theme change event for charts to update
+        document.dispatchEvent(new CustomEvent('themeChanged', {
+            detail: isDark ? 'light' : 'dark'
+        }));
     });
     
     // Function to set dark theme

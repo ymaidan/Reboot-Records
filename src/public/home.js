@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import client from '../utils/apolloClient.js';
 import { GET_USER_INFO, GET_USER_LATEST_PROJECT, GET_USER_POSITION, GET_USER_XP_HISTORY, GET_USER_SKILLS ,GET_USER_AUDITS} from '../graphql/queries.js';
 import { createProfileHeader } from '../utils/graphs.js'; // Import the function
-import { checkAuth as validateAuth } from '/src/public/logout.js';
+import { checkAuth as validateAuth } from '../public/logout.js';
 
 // Check if user is authenticated
 function handleAuth() {
@@ -55,6 +55,15 @@ async function fetchUserData() {
         // Store user ID in localStorage
         localStorage.setItem('userId', user.id);
 
+        // Check if image ID exists and format it properly
+        const imageId = user.attrs && user.attrs["pro-picUploadId"] ? 
+            user.attrs["pro-picUploadId"] : null;
+        
+        // Create proper image URL only if there's a valid imageId
+        const imageUrl = imageId ? 
+            `https://learn.reboot01.com/api/storage?token=${encodeURIComponent(token)}&fileId=${encodeURIComponent(imageId)}` : 
+            null;
+
         const userData = {
             name: `${user.firstName} ${user.lastName}`,
             email: user.email,
@@ -66,7 +75,7 @@ async function fetchUserData() {
             xp: user.transactions_aggregate.aggregate.sum.amount || 0,
             cohort: user.labels.find(label => label.labelName.startsWith('Cohort'))?.labelName || 'N/A',
             latestProject: user.events[0]?.event.path.split('/').pop() || 'N/A',
-            imageId: user.attrs["pro-picUploadId"]
+            imageUrl: imageUrl // Use the properly constructed URL
         };
 
         // Fetch the latest project
@@ -82,10 +91,15 @@ async function fetchUserData() {
 
         userData.latestProject = latestProjVal; // Add latest project to userData
 
-        console.log("Profile Image URL:", userData.imageId); // Log the profile image URL
+        console.log("Profile Image URL:", userData.imageUrl); // Log the profile image URL
 
         updateProfileHeader(userData);
-        await updateProfileImage(userData.imageId);
+        if (userData.imageUrl) {
+            await updateProfileImage(userData.imageUrl);
+        } else {
+            console.log('No profile image available');
+            // You might want to display a placeholder image here
+        }
         
         drawAuditRatioGraph(userData);
 
@@ -122,15 +136,15 @@ function updateProfileHeader(userData) {
     const imgContainer = document.getElementById('imgContainer');
     if (imgContainer) {
         imgContainer.innerHTML = ''; // Clear any existing content
-        if (userData.imageId) {
+        if (userData.imageUrl) {
             const img = document.createElement("img");
-            img.src = `https://learn.reboot01.com/api/storage?token=${localStorage.getItem("jwt_token")}&fileId=${userData.imageId}`;
+            img.src = userData.imageUrl;
             img.alt = "Personal Image";
             img.style.width = '100%'; // Ensure the image fits the container
             img.style.borderRadius = '50%'; // Make the image circular
             imgContainer.appendChild(img);
         } else {
-            console.error('Image ID missing.');
+            console.error('Image URL missing.');
         }
     } else {
         console.error('Image container not found.');
@@ -140,15 +154,39 @@ function updateProfileHeader(userData) {
 // Update the profile image
 async function updateProfileImage(imageUrl) {
     const imgContainer = document.getElementById('imgContainer');
-    if (imgContainer) {
-        const img = document.createElement("img");
-        img.src = imageUrl;
-        img.alt = "Profile Image";
-        img.style.width = "100%"; // Ensure it fills the container
-        img.style.height = "100%"; // Ensure it fills the container
-        img.style.objectFit = "cover"; // Maintain aspect ratio
-     
+    if (!imgContainer) return;
+    
+    // Clear existing content
+    imgContainer.innerHTML = '';
+    
+    if (!imageUrl) {
+        console.error('No image URL provided');
+        // You could add a placeholder here
+        return;
     }
+    
+    // Create image element
+    const img = document.createElement("img");
+    img.alt = "Profile Image";
+    img.style.width = "100%"; 
+    img.style.height = "100%"; 
+    img.style.objectFit = "cover";
+    
+    // Add error handling
+    img.onerror = function() {
+        console.error('Failed to load image:', imageUrl);
+        // You could set a placeholder image here
+        this.src = '/src/assets/placeholder.png'; // Make sure this path exists
+        this.onerror = null; // Prevent infinite error loop
+    };
+    
+    // Set the source after adding error handler
+    img.src = imageUrl;
+    
+    // Append to container
+    imgContainer.appendChild(img);
+    
+    console.log('Image element added with URL:', imageUrl);
 }
 
 async function fetchXPProgress() {
