@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GraphQL Profile</title>
+    <title>Reboot Records
+    </title>
     <link rel="stylesheet" href="/src/styles/home.css">
     <link rel="stylesheet" href="/src/styles/footer.css">
+    <link rel="stylesheet" href="/src/styles/games.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
 </head>
@@ -104,7 +106,7 @@
         <div class="footer-content">
             <div class="footer-left">
                 <div class="footer-logo" id="footerLogo">
-                    <div class="logo-icon">RR</div>
+                    <div class="logo-icon">RR<span class="small-g">G</span></div>
                     <span>Reboot Records Games</span>
                     <div class="games-dropdown" id="gamesDropdown">
                         <div class="dropdown-content">
@@ -158,39 +160,39 @@
     <script type="module" src="/src/public/theme-switcher.js"></script>
     <script type="module" src="/src/public/theme-handler.js"></script>
     <script>
-        // Make sure this script runs AFTER the DOM is fully loaded
-        document.addEventListener('DOMContentLoaded', function() {
-            // Toggle dropdown on click
-            document.getElementById('footerLogo').addEventListener('click', function(event) {
-                event.stopPropagation(); // Prevent the click from bubbling up to the window
-                const dropdown = document.getElementById('gamesDropdown');
-                
-                // Check if dropdown exists
-                if (dropdown) {
-                    console.log('Dropdown found, toggling display');
-                    dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
-                } else {
-                    console.log('Dropdown element not found');
-                }
-            });
-
-            // Close dropdown if clicked outside
-            window.addEventListener('click', function(event) {
-                const dropdown = document.getElementById('gamesDropdown');
-                const logo = document.getElementById('footerLogo');
-                if (dropdown && !logo.contains(event.target)) {
-                    dropdown.style.display = 'none';
-                }
-            });
-
             // Add logout button event listener
             const logoutButton = document.getElementById('logoutButton');
             if (logoutButton) {
                 logoutButton.addEventListener('click', function() {
-                    // Import the logout function dynamically
                     import('/src/public/logout.js').then(module => {
                         module.logout();
                     });
+                });
+            }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle games dropdown
+            const footerLogo = document.getElementById('footerLogo');
+            const gamesDropdown = document.getElementById('gamesDropdown');
+            
+            if (footerLogo && gamesDropdown) {
+                // Toggle dropdown on footer logo click
+                footerLogo.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    gamesDropdown.classList.toggle('show');
+                });
+                
+                // Close dropdown when clicking elsewhere on the page
+                document.addEventListener('click', function(e) {
+                    if (gamesDropdown.classList.contains('show') && !gamesDropdown.contains(e.target)) {
+                        gamesDropdown.classList.remove('show');
+                    }
+                });
+                
+                // Prevent closing when clicking inside dropdown
+                gamesDropdown.addEventListener('click', function(e) {
+                    e.stopPropagation();
                 });
             }
         });

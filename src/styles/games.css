@@ -1,0 +1,349 @@
+/* Games Dropdown Container */
+.games-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 320px;
+    background: rgba(30, 30, 45, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2),
+                inset 0 1px 1px rgba(255, 255, 255, 0.1);
+    padding: 1.2rem;
+    z-index: 1000;
+    margin-top: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.games-dropdown.show {
+    display: block;
+    animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* Dropdown Content */
+.dropdown-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+    justify-content: center;
+}
+
+.dropdown-content h3 {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    margin-bottom: 0.8rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 600;
+    background: linear-gradient(90deg, #9c4dcc, #4d9ccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    width: 100%;
+}
+
+/* Game Links */
+.game-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 0.8rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.25s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative;
+    overflow: hidden;
+    width: calc(50% - 0.4rem);
+    min-width: 130px;
+}
+
+.game-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(to bottom, #9c4dcc, #4d9ccc);
+    opacity: 0;
+    transition: all 0.25s ease;
+}
+
+.game-link:hover {
+    background: rgba(255, 255, 255, 0.07);
+    transform: translateY(-2px) translateX(2px);
+    box-shadow: -3px 3px 10px rgba(0, 0, 0, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.game-link:hover::before {
+    opacity: 1;
+}
+
+.game-name {
+    font-weight: 500;
+    font-size: 0.85rem;
+    transition: all 0.25s ease;
+}
+
+.game-link:hover .game-name {
+    transform: translateX(4px);
+    background: linear-gradient(90deg, #9c4dcc, #4d9ccc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.game-arrow {
+    font-size: 1rem;
+    opacity: 0;
+    transform: translateX(-5px);
+    transition: all 0.25s ease;
+    color: #4d9ccc;
+}
+
+.game-link:hover .game-arrow {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Cooler Animations */
+@keyframes dropIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(-15px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(1);
+    }
+}
+
+/* Glow effect on show */
+.games-dropdown.show {
+    animation: dropIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), 
+               glow 2s ease infinite alternate;
+}
+
+@keyframes glow {
+    from {
+        box-shadow: 0 8px 20px rgba(76, 29, 149, 0.15);
+    }
+    to {
+        box-shadow: 0 8px 25px rgba(76, 29, 149, 0.25);
+    }
+}
+
+/* Theme Compatibility */
+.light-theme .games-dropdown {
+    background: rgba(255, 255, 255, 0.9);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+}
+
+.light-theme .dropdown-content h3 {
+    background: linear-gradient(90deg, #7928ca, #0084ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.light-theme .game-link {
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.light-theme .game-link::before {
+    background: linear-gradient(to bottom, #7928ca, #0084ff);
+}
+
+.light-theme .game-link:hover {
+    background: rgba(0, 0, 0, 0.06);
+}
+
+.light-theme .game-link:hover .game-name {
+    background: linear-gradient(90deg, #7928ca, #0084ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+}
+
+.light-theme .game-arrow {
+    color: #0084ff;
+}
+
+/* Make sure the dropdown has a pointer that matches its parent */
+.games-dropdown::after {
+    content: '';
+    position: absolute;
+    top: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid rgba(30, 30, 45, 0.85);
+    z-index: 1;
+}
+
+.light-theme .games-dropdown::after {
+    border-bottom-color: rgba(255, 255, 255, 0.9);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .games-dropdown {
+        width: 260px;
+        padding: 1.2rem;
+    }
+
+    .game-link {
+        padding: 0.6rem 1rem;
+    }
+
+    .game-name {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .games-dropdown {
+        width: 280px;
+        padding: 1rem;
+    }
+
+    .dropdown-content h3 {
+        font-size: 1.1rem;
+    }
+
+    .game-link {
+        width: 100%;
+    }
+
+    .dropdown-content {
+        flex-direction: column;
+    }
+}
+
+/* Add this to make sure users know the logo is clickable */
+.footer-logo {
+    position: relative;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+/* Styling for the small G in the logo */
+.logo-icon .small-g {
+    font-size: 0.7em;
+    position: relative;
+    top: -0.3em;
+    right: -0.1em;
+    color: #4d9ccc; /* Light blue color */
+    font-weight: bold;
+    opacity: 0.9;
+    text-shadow: 0 0 5px rgba(77, 156, 204, 0.5);
+    transition: all 0.3s ease;
+}
+
+/* Make the G glow on hover */
+.footer-logo:hover .logo-icon .small-g {
+    color: #9c4dcc; /* Purple color */
+    text-shadow: 0 0 8px rgba(156, 77, 204, 0.7);
+    animation: pulsate 1.5s infinite alternate;
+}
+
+@keyframes pulsate {
+    from {
+        opacity: 0.9;
+    }
+    to {
+        opacity: 1;
+        text-shadow: 0 0 12px rgba(156, 77, 204, 0.9);
+    }
+}
+
+/* Light theme adjustments */
+.light-theme .logo-icon .small-g {
+    color: #0084ff;
+    text-shadow: 0 0 5px rgba(0, 132, 255, 0.5);
+}
+
+.light-theme .footer-logo:hover .logo-icon .small-g {
+    color: #7928ca;
+    text-shadow: 0 0 8px rgba(121, 40, 202, 0.7);
+}
+
+/* Make the Reboot Records Games text cooler */
+.footer-logo span {
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #9c4dcc, #4d9ccc, #9c4dcc);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 2px 10px rgba(77, 156, 204, 0.15);
+    animation: shine 5s linear infinite;
+    position: relative;
+    z-index: 1;
+    transition: all 0.3s ease;
+}
+
+/* Shining animation for the text */
+@keyframes shine {
+    to {
+        background-position: 200% center;
+    }
+}
+
+/* Cooler hover effect for the text */
+.footer-logo:hover span {
+    letter-spacing: 1px;
+    transform: translateY(-1px);
+    text-shadow: 0 4px 12px rgba(156, 77, 204, 0.25);
+}
+
+/* Add a subtle glowing line under the text that animates on hover */
+.footer-logo span::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #9c4dcc, #4d9ccc);
+    transition: width 0.4s ease;
+    z-index: -1;
+}
+
+.footer-logo:hover span::after {
+    width: 100%;
+    box-shadow: 0 0 8px rgba(156, 77, 204, 0.5);
+}
+
+/* Light theme adjustments */
+.light-theme .footer-logo span {
+    background: linear-gradient(90deg, #7928ca, #0084ff, #7928ca);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 2px 10px rgba(0, 132, 255, 0.15);
+}
+
+.light-theme .footer-logo:hover span {
+    text-shadow: 0 4px 12px rgba(121, 40, 202, 0.25);
+}
+
+.light-theme .footer-logo span::after {
+    background: linear-gradient(90deg, #7928ca, #0084ff);
+} 

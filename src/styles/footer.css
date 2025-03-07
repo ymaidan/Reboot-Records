@@ -223,13 +223,13 @@ body.dark-theme .github::before {
 }
 
 body.dark-theme .linkedin {
-    background-color: #0077B5;
+    background-color: #022234;
     color: white;
     box-shadow: 0 4px 8px rgba(8, 95, 144, 0.3);
 }
 
 body.dark-theme .linkedin::before {
-    background-color: #006396;
+    background-color: #011925;
 }
 
 /* Light theme */
@@ -251,102 +251,6 @@ body.light-theme .linkedin {
 
 body.light-theme .linkedin::before {
     background-color: #cfe0fc;
-}
-
-/* Games Dropdown Menu */
-.games-dropdown {
-    display: none; /* Initially hide the dropdown */
-    position: absolute;
-    bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 220px;
-    background: var(--background-secondary);
-    border-radius: 12px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-    z-index: 100;
-    margin-bottom: 15px;
-    overflow: hidden;
-}
-
-.games-dropdown::after {
-    content: '';
-    position: absolute;
-    bottom: -8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 0;
-    height: 0;
-    border-left: 8px solid transparent;
-    border-right: 8px solid transparent;
-    border-top: 8px solid var(--background-secondary);
-}
-
-/* Remove hover styles to let JavaScript handle the display */
-/* 
-.footer-logo:hover .games-dropdown,
-.footer-logo:focus-within .games-dropdown {
-    display: block;
-} 
-*/
-
-.dropdown-content {
-    padding: 1rem;
-}
-
-.dropdown-content h3 {
-    margin: 0 0 1rem;
-    font-size: 1rem;
-    color: var(--text-primary);
-    text-align: center;
-    padding-bottom: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.game-link {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    margin: 0.3rem 0;
-    color: var(--text-primary);
-    text-decoration: none;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-}
-
-.game-link:hover {
-    background: var(--primary-color-transparent);
-    transform: translateX(4px);
-}
-
-.game-name {
-    font-weight: 500;
-}
-
-.game-arrow {
-    font-size: 1.1rem;
-    opacity: 0.7;
-    transition: transform 0.2s ease;
-}
-
-.game-link:hover .game-arrow {
-    transform: translateX(3px);
-    opacity: 1;
-}
-
-/* Light theme adjustments for dropdown */
-body.light-theme .games-dropdown {
-    background: var(--background-secondary);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-
-body.light-theme .games-dropdown::after {
-    border-top-color: var(--background-secondary);
-}
-
-body.light-theme .game-link:hover {
-    background: var(--primary-color-transparent);
 }
 
 /* Responsive adjustments for footer */
