@@ -38,6 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Export for use in window object if needed
-window.logout = logout;
-window.checkAuth = checkAuth;
+// Add event listener when used as a module
+if (typeof window !== 'undefined') {
+    window.logout = logout;
+    window.checkAuth = checkAuth;
+}
