@@ -1,6 +1,17 @@
 {
     "routes": [
+      { "src": "/(.*\\.(js|css|svg|jpg|png|json|ico))", "dest": "/$1" },
       { "handle": "filesystem" },
-      { "src": "/(.*)", "status": 404, "dest": "/views/404.html" }
+      { "src": "/(.*)", "status": 404, "dest": "/404.html" }
+    ],
+    "outputDirectory": "dist",
+    "builds": [
+      { 
+        "src": "package.json", 
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "dist"
+        }
+      }
     ]
   }

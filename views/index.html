@@ -35,6 +35,33 @@
         </div>
     </div>
     <script src="/src/public/login.js"></script>
+    <script>
+        // Simple 404 catcher for development
+        window.addEventListener('error', function(e) {
+          if (e.target.tagName === 'LINK' || e.target.tagName === 'SCRIPT' || e.target.tagName === 'IMG') {
+            console.warn('Resource not found:', e.target.src || e.target.href);
+          }
+        });
+      
+        // Client-side 404 handler - more reliable for development
+        if (window.location.pathname !== '/' && 
+            window.location.pathname !== '/views/index.html' && 
+            window.location.pathname !== '/views/home.html' && 
+            !window.location.pathname.match(/\.(js|css|svg|jpg|png|ico|json)$/)) {
+          
+          // Check if this path exists
+          fetch(window.location.href)
+            .then(response => {
+              if (!response.ok && response.status === 404) {
+                window.location.href = '/views/404.html';
+              }
+            })
+            .catch(() => {
+              // Network error or other issue
+              window.location.href = '/views/404.html';
+            });
+        }
+      </script>
 
 </body>
 </html>

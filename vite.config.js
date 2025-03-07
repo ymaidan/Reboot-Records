@@ -1,4 +1,6 @@
 import { defineConfig } from 'vite';
+import custom404Plugin from './vite-404-plugin';
+import { resolve } from 'path';
 
 export default defineConfig({
     root: '.',
@@ -8,13 +10,16 @@ export default defineConfig({
         strictPort: false,
         open: '/views/index.html',
     },
+    plugins: [
+        custom404Plugin()
+    ],
     build: {
         outDir: 'dist',
         rollupOptions: {
             input: {
-                main: '/views/index.html',
-                home: '/views/home.html',
-                notFound: '/views/404.html'
+                main: resolve(__dirname, 'views', 'index.html'),
+                home: resolve(__dirname, 'views', 'home.html'),
+                notFound: resolve(__dirname, 'views', '404.html')
             }
         }
     }

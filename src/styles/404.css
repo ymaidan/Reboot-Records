@@ -1,7 +1,19 @@
 /* Import your theme CSS for consistent styling */
-@import url('./home.css');
-@import url('./footer.css');
-@import url('./games.css');
+@import url('/src/styles/home.css');
+@import url('/src/styles/footer.css');
+@import url('/src/styles/games.css');
+
+/* Add these near the top of your file for fallbacks */
+:root {
+    --glass-background: rgba(30, 41, 59, 0.7);
+    --border-radius: 12px;
+    --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+    --primary-color: #6366f1;
+    --secondary-color: #8b5cf6;
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --transition-speed: 0.3s;
+}
 
 /* 404-specific styles */
 .error-container {
