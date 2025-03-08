@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GraphQL Profile - Login</title>
+  <link rel="stylesheet" crossorigin href="/assets/main-BUKAEqUk.css">
+</head>
+<body>
+    <div class="particles">
+        <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 30%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 50%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 70%; animation-delay: 6s;"></div>
+        <div class="particle" style="left: 90%; animation-delay: 8s;"></div>
+    </div>
+    <div class="container">
+        <div class="login-box">
+            <h2>Welcome Back</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <input type="text" id="username" required>
+                    <label for="username">Username or Email</label>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" id="password" required>
+                    <label for="password">Password</label>
+                </div>
+
+                <div class="error-message" id="errorMessage"></div>
+                
+                <button type="submit" class="login-btn">Login</button>
+            </form>
+        </div>
+    </div>
+    <script src="/src/public/login.js"></script>
+    <script>
+        // Simple 404 catcher for development
+        window.addEventListener('error', function(e) {
+          if (e.target.tagName === 'LINK' || e.target.tagName === 'SCRIPT' || e.target.tagName === 'IMG') {
+            console.warn('Resource not found:', e.target.src || e.target.href);
+          }
+        });
+      
+        // Client-side 404 handler - more reliable for development
+        if (window.location.pathname !== '/' && 
+            window.location.pathname !== '/views/index.html' && 
+            window.location.pathname !== '/views/home.html' && 
+            !window.location.pathname.match(/\.(js|css|svg|jpg|png|ico|json)$/)) {
+          
+          // Check if this path exists
+          fetch(window.location.href)
+            .then(response => {
+              if (!response.ok && response.status === 404) {
+                window.location.href = '/views/404.html';
+              }
+            })
+            .catch(() => {
+              // Network error or other issue
+              window.location.href = '/views/404.html';
+            });
+        }
+      </script>
+
+</body>
+</html>
