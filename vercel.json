@@ -1,5 +1,6 @@
 {
     "routes": [
+      { "src": "^/$", "dest": "/views/index.html" },
       { "src": "/(.*\\.(js|css|svg|jpg|png|json|ico))", "dest": "/$1" },
       { "handle": "filesystem" },
       { "src": "/(.*)", "status": 404, "dest": "/404.html" }
