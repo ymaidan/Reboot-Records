@@ -26,28 +26,33 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             }
         });
 
-        // Log the response
-        console.log('Login response:', response); // Log the response
+        console.log('Login response:', response);
 
         if (!response.ok) {
             throw new Error('Invalid credentials');
         }
 
         // Get JWT token from response
-        const data = await response.text(); // Use text() instead of json()
-        console.log('Response data:', data); // Log the response data
+        const data = await response.text();
+        console.log('Response data:', data);
+        
         if (!data) {
             throw new Error('No token received from the server');
         }
         
         // Store the token without extra quotes
-        localStorage.setItem('jwt_token', data.replace(/"/g, '')); // Remove any extra quotes
-        console.log('Stored JWT Token:', localStorage.getItem('jwt_token')); // Log the stored token
+        localStorage.setItem('jwt_token', data.replace(/"/g, ''));
+        console.log('Stored JWT Token:', localStorage.getItem('jwt_token'));
         
-        // Redirect to profile or dashboard page
-        window.location.href = '/views/home.html';
+        // Use absolute path for redirect in production environments
+        if (window.location.hostname.includes('vercel.app')) {
+            window.location.href = '/views/home.html';
+        } else {
+            window.location.href = '/views/home.html';
+        }
         
     } catch (error) {
+        console.error('Login error:', error);
         errorMessage.textContent = error.message;
     }
 }); 
